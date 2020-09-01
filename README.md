@@ -1,6 +1,6 @@
 # COVIDNet
 
-
+Publication: https://arxiv.org/pdf/2003.09871.pdf <br>
 Original work: https://github.com/lindawangg/COVID-Net <br>
 PyTorch base see: https://github.com/iliasprc/COVIDNet
 
