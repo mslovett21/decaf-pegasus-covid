@@ -10,7 +10,6 @@ from data_loader.covidxdataset import COVIDxDataset
 from model.metric import accuracy
 from utils.util import print_stats, print_summary, select_model, select_optimizer, MetricTracker
 
-
 def initialize(args):
     if args.device is not None:
         os.environ["CUDA_VISIBLE_DEVICES"] = str(args.device)
@@ -30,10 +29,8 @@ def initialize(args):
                    'shuffle': False,
                    'num_workers': 1}
     if args.dataset_name == 'COVIDx':
-        train_loader = COVIDxDataset(mode='train', n_classes=args.classes, dataset_path=args.dataset,
-                                     dim=(224, 224))
-        val_loader = COVIDxDataset(mode='test', n_classes=args.classes, dataset_path=args.dataset,
-                                   dim=(224, 224))
+        train_loader = COVIDxDataset(mode='train', n_classes=args.classes)
+        val_loader   = COVIDxDataset(mode='test', n_classes=args.classes)
 
         test_loader = None
 
@@ -70,6 +67,7 @@ def train(args, model, trainloader, optimizer, epoch, writer):
     for batch_idx, input_tensors in enumerate(trainloader):
         optimizer.zero_grad()
         input_data, target = input_tensors
+
         if (args.cuda):
             input_data = input_data.cuda()
             target = target.cuda()
@@ -121,5 +119,5 @@ def validation(args, model, testloader, epoch, writer):
 
     print_summary(args, epoch, num_samples, val_metrics, mode="Validation")
 
-    print('Confusion Matrix\n{}'.format(confusion_matrix.cpu().numpy()))
+    print('Confusion Matrix{}'.format(confusion_matrix.cpu().numpy()))
     return val_metrics, confusion_matrix

@@ -58,7 +58,7 @@ def save_checkpoint(state, is_best, path, filename='last'):
 
 
 def save_model(model, optimizer, args, metrics, epoch, best_pred_loss, confusion_matrix):
-    loss = metrics.data['loss']
+    loss = metrics._data.average.loss
     save_path = args.save
     make_dirs(save_path)
 
@@ -72,7 +72,7 @@ def save_model(model, optimizer, args, metrics, epoch, best_pred_loss, confusion
         save_checkpoint({'epoch': epoch,
                          'state_dict': model.state_dict(),
                          'optimizer': optimizer.state_dict(),
-                         'metrics': metrics.data},
+                         'metrics': metrics._data},
                         is_best, save_path, args.model + "_best")
         np.save(save_path + 'best_confusion_matrix.npy', confusion_matrix.cpu().numpy())
 
@@ -80,7 +80,7 @@ def save_model(model, optimizer, args, metrics, epoch, best_pred_loss, confusion
         save_checkpoint({'epoch': epoch,
                          'state_dict': model.state_dict(),
                          'optimizer': optimizer.state_dict(),
-                         'metrics': metrics.data},
+                         'metrics': metrics._data},
                         False, save_path, args.model + "_last")
 
     return best_pred_loss
@@ -115,7 +115,11 @@ def read_filepaths(file):
         for idx, line in enumerate(lines):
             if ('/ c o' in line):
                 break
-            subjid, path, label = line.split(' ')
+            try:
+                subjid, path, label, source = line.split(' ')
+            except:
+                subjid, path, label = line.split(' ')
+
 
             paths.append(path)
             labels.append(label)
@@ -199,6 +203,7 @@ class Metrics:
 
 
 def select_model(args):
+    print(args.model)
     if args.model == 'COVIDNet_small':
         return CovidNet('small', n_classes=args.classes)
 

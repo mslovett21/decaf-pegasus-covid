@@ -26,6 +26,9 @@ val_transformer = transforms.Compose([
     normalize
 ])
 
+TEST_FILE = "train_COVIDx4.txt"
+TRAIN_FILE = "test_COVIDx4.txt"
+
 
 
 class COVIDxDataset(Dataset):
@@ -39,8 +42,8 @@ class COVIDxDataset(Dataset):
         self.CLASSES = n_classes
         self.dim = dim
         self.COVIDxDICT = {'pneumonia': 0, 'normal': 1, 'COVID-19': 2}
-        testfile = './data/covid_x_dataset/test_split_v2.txt'
-        trainfile = './data/covid_x_dataset/train_split_v2.txt'
+        testfile = './data/covid_x_dataset/test_split.txt'
+        trainfile = './data/covid_x_dataset/train_split.txt'
         if (mode == 'train'):
             self.paths, self.labels = read_filepaths(trainfile)
             self.transform = train_transformer
@@ -49,6 +52,7 @@ class COVIDxDataset(Dataset):
             self.transform = val_transformer
         print("{} examples =  {}".format(mode, len(self.paths)))
         self.mode = mode
+        self.i = 0
         
 
     def __len__(self):
@@ -61,13 +65,12 @@ class COVIDxDataset(Dataset):
 
         return image_tensor, label_tensor
 
-    def load_image(self, img_path, dim, augmentation='test'):
+
+    def load_image(self, img_path,dim,augmentation='test'):
         if not os.path.exists(img_path):
             print("IMAGE DOES NOT EXIST {}".format(img_path))
+
         image = Image.open(img_path).convert('RGB')
         image = image.resize(dim)
-
-
         image_tensor = self.transform(image)
-
         return image_tensor

@@ -180,6 +180,8 @@ class CNN(nn.Module):
         super(CNN, self).__init__()
         if (model == 'resnet18'):
             self.cnn = models.resnet18(pretrained=True)
+            for param in self.cnn.parameters():
+                param.requires_grad = False
             self.cnn.fc = nn.Linear(512, classes)
         elif (model == 'resnext50_32x4d'):
 
