@@ -1,37 +1,10 @@
 # COVIDNet
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
 
-
-Original work please see: https://github.com/lindawangg/COVID-Net
+Original work: https://github.com/lindawangg/COVID-Net <br>
 PyTorch base see: https://github.com/iliasprc/COVIDNet
 
 
-## Table of Contents
-
-* [Getting Started](#getting-started)
-  * [Installation](#installation)
-* [Usage](#usage)
-* [Results](#results)
-* [Datasets](#datasets)
-* [Contributing](#contributing)
-* [License](#license)
-* [Contact](#contact)
-* [Acknowledgements](#acknowledgements)
-
-
-<!-- GETTING STARTED -->
-## Getting Started
-
-### Installation
-To install the required python packages use the following command 
-```
-pip install -r requirements.txt
-```
-<!-- USAGE EXAMPLES -->
 ## Usage
 
 ### Training
@@ -66,49 +39,15 @@ The network takes as input an image of shape (N, 224, 224, 3) and outputs the so
 
 
 ```
-<!-- RESULTS -->
-## Results 
 
-
-implementation of COVID-Net and comparison with CNNs pretrained on ImageNet dataset
-
-
-### Results in COVIDx  dataset 
-
-
-| Accuracy (%) | # Params (M) | MACs (G) |        Model        |
-|:------------:|:------------:|:--------:|:-------------------:|
-|   89.10      |     115.42   |   2.26   |   [COVID-Net-Small] |
-|   91.22      |     118.19   |   3.54   |   [COVID-Net-Large](https://drive.google.com/open?id=1-3SKFua_wFl2_aAQMIrj2FhowTX8B551) |
-|   94.0       |     -   |   -      |   [Mobilenet V2   ](https://drive.google.com/open?id=19J-1bW6wPl7Kmm0pNagehlM1zk9m37VV) |
-|   95.0       |     -   |   -      |   [ResNeXt50-32x4d](https://drive.google.com/open?id=1-BLolPNYMVWSY0Xnm8Y8wjQCapXiPnLx) |
-|   94.0       |     -   |   -      | [ResNet-18](https://drive.google.com/open?id=1wxo4gkNGyrhR-1PG8Vr1hj65MfSAHOgJ) |
-
-
-
-<!-- Datasets -->
-## Datasets
+## DATASET
 
 
 ###  COVIDx 
 
-Chest radiography images distribution
 
 
 |  Type | Normal | Pneumonia | COVID-19 | Total |
 |:-----:|:------:|:---------:|:--------:|:-----:|
 | train |  7966  |    8514   |    66    | 16546 |
 |  test |   100  |     100   |    10    |   210 |
-
-
-
-[contributors-shield]: https://img.shields.io/github/contributors/iliasprc/COVIDNet.svg?style=flat-square
-[contributors-url]: https://github.com/iliasprc/COVIDNet/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/iliasprc/COVIDNet.svg?style=flat-square
-[forks-url]: https://github.com/iliasprc/COVIDNet/network/members
-
-[stars-shield]: https://img.shields.io/github/stars/iliasprc/COVIDNet.svg?style=flat-square
-[stars-url]: https://github.com/iliasprc/COVIDNet/stargazers
-
-[issues-shield]: https://img.shields.io/github/issues/iliasprc/COVIDNet.svg?style=flat-square
-[issues-url]: https://github.com/iliasprc/COVIDNet/issues
