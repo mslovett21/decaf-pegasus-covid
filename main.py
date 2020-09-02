@@ -38,7 +38,7 @@ def main():
 
 def get_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--batch_size', type=int, default=20, help='batch size for training')
+    parser.add_argument('--batch_size', type=int, default=10, help='batch size for training')
     parser.add_argument('--log_interval', type=int, default=1000, help='steps to print metrics and loss')
     parser.add_argument('--dataset_name', type=str, default="COVIDx", help='dataset name COVIDx or COVID_CT')
     parser.add_argument('--nEpochs', type=int, default=5, help='total number of epochs')

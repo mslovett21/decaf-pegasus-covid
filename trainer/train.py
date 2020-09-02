@@ -5,9 +5,9 @@ import torch.nn as nn
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 
-from data_loader.covid_ct_dataset import CovidCTDataset
 from data_loader.covidxdataset import COVIDxDataset
 from model.metric import accuracy
+from model.loss import focal_loss
 from utils.util import print_stats, print_summary, select_model, select_optimizer, MetricTracker
 
 def initialize(args):
@@ -58,7 +58,7 @@ def initialize(args):
 
 def train(args, model, trainloader, optimizer, epoch, writer):
     model.train()
-    criterion = nn.CrossEntropyLoss(reduction='mean')
+    #criterion = nn.CrossEntropyLoss(reduction='mean')
 
     metric_ftns = ['loss', 'correct', 'total', 'accuracy']
     train_metrics = MetricTracker(*[m for m in metric_ftns], writer=writer, mode='train')
@@ -74,7 +74,7 @@ def train(args, model, trainloader, optimizer, epoch, writer):
 
         output = model(input_data)
 
-        loss = criterion(output, target)
+        loss = focal_loss(output, target)
         loss.backward()
 
         optimizer.step()
@@ -91,7 +91,7 @@ def train(args, model, trainloader, optimizer, epoch, writer):
 
 def validation(args, model, testloader, epoch, writer):
     model.eval()
-    criterion = nn.CrossEntropyLoss(reduction='mean')
+    #criterion = nn.CrossEntropyLoss(reduction='mean')
 
     metric_ftns = ['loss', 'correct', 'total', 'accuracy']
     val_metrics = MetricTracker(*[m for m in metric_ftns], writer=writer, mode='val')
@@ -107,7 +107,7 @@ def validation(args, model, testloader, epoch, writer):
 
             output = model(input_data)
 
-            loss = criterion(output, target)
+            loss = focal_loss(output, target)
 
             correct, total, acc = accuracy(output, target)
             num_samples = batch_idx * args.batch_size + 1
