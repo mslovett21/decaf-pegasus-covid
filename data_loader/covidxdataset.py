@@ -26,8 +26,6 @@ val_transformer = transforms.Compose([
     normalize
 ])
 
-TEST_FILE = "train_COVIDx4.txt"
-TRAIN_FILE = "test_COVIDx4.txt"
 
 
 

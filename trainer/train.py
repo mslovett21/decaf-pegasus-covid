@@ -1,14 +1,19 @@
 import os
-
+import time
 import torch
 import torch.nn as nn
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 
 from data_loader.covidxdataset import COVIDxDataset
-from model.metric import accuracy
+from model.metric import accuracy, precision_score
 from model.loss import focal_loss
 from utils.util import print_stats, print_summary, select_model, select_optimizer, MetricTracker
+
+
+import optuna
+from optuna.distributions import UniformDistribution, CategoricalDistribution,LogUniformDistribution
+optuna.logging.set_verbosity(optuna.logging.WARNING)
 
 def initialize(args):
     if args.device is not None:
@@ -60,13 +65,16 @@ def train(args, model, trainloader, optimizer, epoch, writer):
     model.train()
     #criterion = nn.CrossEntropyLoss(reduction='mean')
 
-    metric_ftns = ['loss', 'correct', 'total', 'accuracy']
+    metric_ftns = ['loss', 'correct', 'total', 'accuracy', 'precision_mean', 'recall_mean']
     train_metrics = MetricTracker(*[m for m in metric_ftns], writer=writer, mode='train')
     train_metrics.reset()
+    counter_batches = 0
+    counter_covid = 0
 
     for batch_idx, input_tensors in enumerate(trainloader):
         optimizer.zero_grad()
         input_data, target = input_tensors
+        counter_batches +=1
 
         if (args.cuda):
             input_data = input_data.cuda()
@@ -74,14 +82,19 @@ def train(args, model, trainloader, optimizer, epoch, writer):
 
         output = model(input_data)
 
-        loss = focal_loss(output, target)
+        loss,counter = focal_loss(output, target)
+        counter_covid += counter
+#        print("{} of {} have covid".format(counter_covid,counter_batches))
         loss.backward()
 
         optimizer.step()
         correct, total, acc = accuracy(output, target)
+        precision_mean, recall_mean = precision_score(output,target)
+#        print("Precision mean: {}".format(precision_mean))
 
         num_samples = batch_idx * args.batch_size + 1
-        train_metrics.update_all_metrics({'correct': correct, 'total': total, 'loss': loss.item(), 'accuracy': acc},
+        train_metrics.update_all_metrics({'correct': correct, 'total': total, 'loss': loss.item(),
+         'accuracy': acc, 'precision_mean': precision_mean, 'recall_mean':recall_mean},
                                          writer_step=(epoch - 1) * len(trainloader) + batch_idx)
         print_stats(args, epoch, num_samples, trainloader, train_metrics)
 
@@ -93,7 +106,7 @@ def validation(args, model, testloader, epoch, writer):
     model.eval()
     #criterion = nn.CrossEntropyLoss(reduction='mean')
 
-    metric_ftns = ['loss', 'correct', 'total', 'accuracy']
+    metric_ftns = ['loss', 'correct', 'total', 'accuracy','precision_mean', 'recall_mean']
     val_metrics = MetricTracker(*[m for m in metric_ftns], writer=writer, mode='val')
     val_metrics.reset()
     confusion_matrix = torch.zeros(args.classes, args.classes)
@@ -107,14 +120,16 @@ def validation(args, model, testloader, epoch, writer):
 
             output = model(input_data)
 
-            loss = focal_loss(output, target)
+            loss,counter = focal_loss(output, target)
 
             correct, total, acc = accuracy(output, target)
+            precision_mean, recall_mean = precision_score(output,target)
             num_samples = batch_idx * args.batch_size + 1
             _, preds = torch.max(output, 1)
             for t, p in zip(target.cpu().view(-1), preds.cpu().view(-1)):
                 confusion_matrix[t.long(), p.long()] += 1
-            val_metrics.update_all_metrics({'correct': correct, 'total': total, 'loss': loss.item(), 'accuracy': acc},
+            val_metrics.update_all_metrics({'correct': correct, 'total': total, 'loss': loss.item(),
+             'accuracy': acc,'precision_mean': precision_mean, 'recall_mean':recall_mean},
                                            writer_step=(epoch - 1) * len(testloader) + batch_idx)
 
     print_summary(args, epoch, num_samples, val_metrics, mode="Validation")
