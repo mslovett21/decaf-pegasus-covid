@@ -203,10 +203,9 @@ class Metrics:
 
 
 def select_model(args):
-    print(args.model)
+
     if args.model == 'COVIDNet_small':
         return CovidNet('small', n_classes=args.classes)
-
     elif args.model == 'COVIDNet_large':
         return CovidNet('large', n_classes=args.classes)
     elif args.model in ['resnet18', 'mobilenet2', 'densenet169', 'resneXt']:
@@ -231,7 +230,7 @@ def read_txt(txt_path):
 
 def print_stats(args, epoch, num_samples, trainloader, metrics):
     if (num_samples % args.log_interval == 1):
-        print("Epoch:{:2d}\tSample:{:5d}/{:5d}\tLoss:{:.4f}\tAccuracy:{:.2f}\tPPV:{:.2f}\tSensitivity:{:.2f}".format(epoch,
+        print("Epoch:{:2d}\tSample:{:5d}/{:5d}\tLoss:{:.4f}\tAccuracy:{:.2f}\tPPV:{:.2f}\tSensitivity:{:.2f}\n".format(epoch,
                                                                                      num_samples,
                                                                                      len(trainloader) * args.batch_size,
                                                                                      metrics.avg('loss'),
@@ -241,7 +240,7 @@ def print_stats(args, epoch, num_samples, trainloader, metrics):
 
 
 def print_summary(args, epoch, num_samples, metrics, mode=''):
-    print(mode + "\n SUMMARY EPOCH:{:2d}\tSample:{:5d}/{:5d}\tLoss:{:.4f}\tAccuracy:{:.2f}\n".format(epoch,
+    print(mode + "\n SUMMARY EPOCH:{:2d}\tSample:{:5d}/{:5d}\tLoss:{:.4f}\tAccuracy:{:.2f}\tPPV:{:.2f}\tSensitivity:{:.2f}".format(epoch,
                                                                                                      num_samples,
                                                                                                      num_samples,
                                                                                                      metrics.avg('loss'),

@@ -8,18 +8,21 @@ def nll_loss(output, target):
     return F.nll_loss(output, target)
 
 
+
 def crossentropy_loss(output, target):
     return F.cross_entropy(output, target)
 
-def focal_loss(output,target):
-    w2 = torch.Tensor([1.456,1.0,15.71]).cuda()
+
+
+def weighted_loss(output,target,w2):
+    
     loss = F.cross_entropy(output, target,weight=w2)
     y = torch.argmax(F.softmax(output),dim = 1)
     unique, counts = np.unique(target.cpu().numpy(), return_counts=True)
     values_dict = dict(zip(unique, counts))
     a = 0
     if 2 in values_dict.keys():
-        a=1
+        a=1   
     return loss,a
 
 
