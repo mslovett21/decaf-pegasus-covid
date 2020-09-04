@@ -1,6 +1,11 @@
 import torch
 from sklearn.metrics import classification_report
 from sklearn.metrics import precision_recall_fscore_support
+
+import warnings
+from sklearn.exceptions import UndefinedMetricWarning
+warnings.filterwarnings(action='ignore', category=UndefinedMetricWarning)
+
 from IPython import embed
 
 #target_names = ['pneumonia', 'normal', 'COVID-19']

@@ -8,12 +8,16 @@ from torch.utils.data import DataLoader
 from data_loader.covidxdataset import COVIDxDataset
 from model.metric import accuracy, precision_score
 from model.loss import weighted_loss
-from utils.util import print_stats, print_summary, select_model, select_optimizer, MetricTracker
+from utils.util import print_stats, print_summary, select_model, MetricTracker
 
 
 import optuna
 from optuna.distributions import UniformDistribution, CategoricalDistribution,LogUniformDistribution
 optuna.logging.set_verbosity(optuna.logging.WARNING)
+from IPython import embed
+
+
+METRICS_TRACKED = ['loss', 'correct', 'total', 'accuracy','precision_mean', 'recall_mean']
 
 def initialize(args):
     
@@ -21,8 +25,6 @@ def initialize(args):
         os.environ["CUDA_VISIBLE_DEVICES"] = str(args.device)
     
     model = select_model(args)
-
-    optimizer = select_optimizer(args, model)
 
     if (args.cuda):
         model.cuda()
@@ -44,17 +46,18 @@ def initialize(args):
     test_generator = None
 
 
-    return model, optimizer, training_generator, val_generator, test_generator
+    return model, training_generator, val_generator, test_generator
 
 
 def train(args, model, trainloader, optimizer, epoch, writer):
+    
+    start_time = time.time()
     model.train()
-    #criterion = nn.CrossEntropyLoss(reduction='mean')
 
-    metric_ftns = ['loss', 'correct', 'total', 'accuracy', 'precision_mean', 'recall_mean']
-    train_metrics = MetricTracker(*[m for m in metric_ftns], writer=writer, mode='train')
-    w2 = torch.Tensor([1.456,1.0,15.71]).cuda()
+    train_metrics = MetricTracker(*[m for m in METRICS_TRACKED], writer=writer, mode='train')
+    w2 = torch.Tensor([1.0,1.0,1.5]).cuda() #torch.Tensor([1.456,1.0,15.71]).cuda()
     train_metrics.reset()
+    # JUST FOR CHECK
     counter_batches = 0
     counter_covid = 0
 
@@ -77,14 +80,13 @@ def train(args, model, trainloader, optimizer, epoch, writer):
         optimizer.step()
         correct, total, acc = accuracy(output, target)
         precision_mean, recall_mean = precision_score(output,target)
-#        print("Precision mean: {}".format(precision_mean))
 
         num_samples = batch_idx * args.batch_size + 1
         train_metrics.update_all_metrics({'correct': correct, 'total': total, 'loss': loss.item(),
          'accuracy': acc, 'precision_mean': precision_mean, 'recall_mean':recall_mean},
                                          writer_step=(epoch - 1) * len(trainloader) + batch_idx)
         print_stats(args, epoch, num_samples, trainloader, train_metrics)
-
+    print("--- %s seconds ---" % (time.time() - start_time))
     print_summary(args, epoch, num_samples, train_metrics, mode="Training")
     return train_metrics
 
@@ -92,11 +94,11 @@ def train(args, model, trainloader, optimizer, epoch, writer):
 def validation(args, model, testloader, epoch, writer):
     
     model.eval()
-    metric_ftns = ['loss', 'correct', 'total', 'accuracy','precision_mean', 'recall_mean']
     
-    val_metrics = MetricTracker(*[m for m in metric_ftns], writer=writer, mode='val')
+    val_metrics = MetricTracker(*[m for m in METRICS_TRACKED], writer=writer, mode='val')
     val_metrics.reset()
-    w2 = torch.Tensor([1.456,1.0,15.71]).cuda()
+    w_full = torch.Tensor([1.456,1.0,15.71]).cuda()
+    w2 = torch.Tensor([1.0,1.0,1.5]).cuda()
     
     confusion_matrix = torch.zeros(args.classes, args.classes)
     
@@ -104,6 +106,7 @@ def validation(args, model, testloader, epoch, writer):
         for batch_idx, input_tensors in enumerate(testloader):
 
             input_data, target = input_tensors
+
             if (args.cuda):
                 input_data = input_data.cuda()
                 target = target.cuda()
@@ -123,8 +126,8 @@ def validation(args, model, testloader, epoch, writer):
              'accuracy': acc,'precision_mean': precision_mean, 'recall_mean':recall_mean},
                                            writer_step=(epoch - 1) * len(testloader) + batch_idx)
 
-    print_summary(args, epoch, num_samples, val_metrics, mode="Validation")
 
+    print_summary(args, epoch, num_samples, val_metrics, mode="Validation")
     print('Confusion Matrix{}'.format(confusion_matrix.cpu().numpy()))
     
     return val_metrics, confusion_matrix

@@ -23,10 +23,12 @@ def weighted_loss(output,target,w2):
     a = 0
     if 2 in values_dict.keys():
         a=1   
+    
     return loss,a
 
 
 '''
+FOCAL LOSS could help if no augmentation
 def focal_loss(output,target):
     w2 = torch.Tensor([1,1,4])
 

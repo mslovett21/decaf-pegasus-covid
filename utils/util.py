@@ -119,8 +119,6 @@ def read_filepaths(file):
                 subjid, path, label, source = line.split(' ')
             except:
                 subjid, path, label = line.split(' ')
-
-
             paths.append(path)
             labels.append(label)
     return paths, labels
@@ -212,13 +210,13 @@ def select_model(args):
         return CNN(args.classes, args.model)
 
 
-def select_optimizer(args, model):
-    if args.opt == 'sgd':
-        return optim.SGD(model.parameters(), lr=args.lr, momentum=0.5, weight_decay=args.weight_decay)
-    elif args.opt == 'adam':
-        return optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-    elif args.opt == 'rmsprop':
-        return optim.RMSprop(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+def select_optimizer(optim_name, model, lr, weight_decay):
+    if optim_name== 'SGD':
+        return optim.SGD(model.parameters(), lr=lr, momentum=0.5, weight_decay=weight_decay)
+    elif optim_name == 'Adam':
+        return optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
+    elif optim_name == 'RMSprop':
+        return optim.RMSprop(model.parameters(), lr=lr, weight_decay=weight_decay)
 
 
 def read_txt(txt_path):
@@ -230,7 +228,7 @@ def read_txt(txt_path):
 
 def print_stats(args, epoch, num_samples, trainloader, metrics):
     if (num_samples % args.log_interval == 1):
-        print("Epoch:{:2d}\tSample:{:5d}/{:5d}\tLoss:{:.4f}\tAccuracy:{:.2f}\tPPV:{:.2f}\tSensitivity:{:.2f}\n".format(epoch,
+        print("Epoch:{:2d}\tSample:{:5d}/{:5d}\tLoss:{:.4f}\tAccuracy:{:.2f}\tPPV:{:.2f}\tSensitivity:{:.2f}".format(epoch,
                                                                                      num_samples,
                                                                                      len(trainloader) * args.batch_size,
                                                                                      metrics.avg('loss'),
@@ -249,7 +247,7 @@ def print_summary(args, epoch, num_samples, metrics, mode=''):
                                                                                                      metrics.avg('recall_mean')))
 
 
-# TODO
+
 def confusion_matrix(nb_classes):
     confusion_matrix = torch.zeros(nb_classes, nb_classes)
     with torch.no_grad():

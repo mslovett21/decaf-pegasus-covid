@@ -9,3 +9,4 @@ utils/__pycache__/
 data_loader/__pycache__/
 *.npy
 LICENSE
+*.pkl
