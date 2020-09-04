@@ -130,7 +130,6 @@ class MetricTracker:
         self.writer = writer
         self.mode = mode + '/'
         self.keys = keys
-        print(self.keys)
         self._data = pd.DataFrame(index=keys, columns=['total', 'counts', 'average'])
         self.reset()
 

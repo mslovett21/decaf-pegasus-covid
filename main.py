@@ -9,6 +9,7 @@ import torch.optim as optim
 
 
 import utils.util as util
+from communication.communication import send_message_to_manager, create_new_trial_object
 from trainer.train import initialize, train, validation
 from IPython import embed
 
@@ -46,7 +47,6 @@ def get_arguments():
     parser.add_argument('--model', type=str, default='COVIDNet_small',choices=('COVIDNet_small', 'resnet18', 'COVIDNet_large'))
     parser.add_argument('--root_path', type=str, default='./data',help='path to dataset ')
     parser.add_argument('--save', type=str, default='./saved/COVIDNet' + util.datestr(),help='path to checkpoint save directory ')
-
     parser.add_argument('--epochs',  metavar='num_epochs', type=int, nargs=1,default=1, help = "number of training epochs")
     parser.add_argument('--trials',  metavar='num_trials', type=int, nargs=1, default=1, help = "number of HPO trials")
     parser.add_argument('--worker_id', metavar='worker_id', type=int, nargs=1,  default=0, help = "worker id")
@@ -73,7 +73,7 @@ def objective(trial):
         writer = SummaryWriter('./runs/' + util.datestr())
     else:
         writer = None
-    
+        
     for epoch in range(1, EPOCHS + 1):
         
         train(ARGS, model, training_generator, optimizer, epoch, writer)        
@@ -100,7 +100,7 @@ def hpo_global_update(study, trial):
     OWN_NEW_TRIALS += 1
 
     if (OWN_NEW_TRIALS == EXCHANGE_RATE):
-        send_message_to_manager(study)        
+        send_message_to_manager(study, EXCHANGE_RATE, WORKER_ID)        
         OWN_NEW_TRIALS = 0
         try:
             get_message_from_manager(study)
@@ -121,7 +121,7 @@ def create_study(hpo_checkpoint_file):
             print("There are {} trial(s) to do out of {}".format(todo_trials, TOTAL_TRIALS))
             STUDY.optimize(objective, n_trials=todo_trials, timeout=600, callbacks=[hpo_global_update])
         else:
-            print("Nothing to do")
+            pass
     except:
         STUDY = optuna.create_study(direction = 'maximize', study_name = MODEL)
         STUDY.set_user_attr("worker_id", WORKER_ID)
@@ -141,25 +141,24 @@ def main():
     global EXCHANGE_RATE
     global ARGS
     
-    args = get_arguments()
-    ARGS = args
+    ARGS = get_arguments()   
+    SEED = ARGS.seed
     
-    SEED = args.seed
     torch.manual_seed(SEED)
-    
     torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False
-    
+    torch.backends.cudnn.benchmark = False    
     np.random.seed(SEED)
     
-    if (args.cuda):
+    
+    if (ARGS.cuda):
         torch.cuda.manual_seed(SEED)
 
-    EPOCHS        = args.epochs[0]
-    TOTAL_TRIALS  = args.trials[0]
-    WORKER_ID     = args.worker_id
-    EXCHANGE_RATE = args.ex_rate
-    MODEL         = args.model
+    
+    EPOCHS        = ARGS.epochs[0]
+    TOTAL_TRIALS  = ARGS.trials[0]
+    WORKER_ID     = ARGS.worker_id[0]
+    EXCHANGE_RATE = ARGS.ex_rate
+    MODEL         = ARGS.model
     
     try:
         hpo_checkpoint_file = "hpo_study_checkpoint_{}_{}.pkl".format(MODEL, WORKER_ID)
@@ -170,7 +169,6 @@ def main():
     
     finally:
         hpo_monitor(STUDY)
-
 
     return 0
 
