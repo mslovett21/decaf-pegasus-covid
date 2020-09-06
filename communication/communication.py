@@ -19,7 +19,7 @@ def prepare_message(list_of_trials, worker_id):
 def send_message_to_manager(study,exchange_rate,worker_id):
 
     message_to_send = prepare_message(study.trials[-exchange_rate:], worker_id)
-    f_send = open("worker_id{}_to_manager_{}.txt".format(worker_id, len(study.trials)),"w")
+    f_send = open("worker_id_{}_to_manager.txt".format(worker_id),"w")
     print(f_send)
     for line in message_to_send:
         f_send.write( str(line))
