@@ -16,7 +16,7 @@ from IPython import embed
 
 import optuna
 from optuna.distributions import UniformDistribution, CategoricalDistribution,LogUniformDistribution
-optuna.logging.set_verbosity(optuna.logging.WARNING)
+optuna.logging.set_verbosity(optuna.logging.ERROR)
 
 
 ### ------------------------- LOGGER--------------------------------
@@ -71,6 +71,7 @@ def objective(trial):
     optim_name   = trial.suggest_categorical("optimizer", ["Adam", "RMSprop", "SGD"])
     weight_decay = trial.suggest_float("weight_decay", 1e-5, 1e-1, log=True)
     lr           = trial.suggest_float("learning_rate", 1e-7, 1e-5, log=True)
+    trial.set_user_attr("worker_id", WORKER_ID)
     
     optimizer = util.select_optimizer(optim_name, model, lr, weight_decay)
     scheduler = ReduceLROnPlateau(optimizer, factor=0.5, patience=2, min_lr=1e-5, verbose=True)

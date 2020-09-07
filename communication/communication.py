@@ -30,21 +30,15 @@ def send_message_to_manager(study,exchange_rate,worker_id):
 
 
 def get_message_from_manager(study, WORKER_ID):
-    print("MESSAGE FROM MANAGER")
 
     f_receive = open("manager_to_worker_id_{}.txt".format(WORKER_ID))
     info_line = f_receive.readline()
-    print(study.trials_dataframe())
-
-    embed()
-    
+   
     while info_line:
         info_dict = eval(info_line)
         new_trial = create_new_trial_object(info_dict)
         study.add_trial(new_trial)
         info_line = f_receive.readline()
-    print("-----After-----")
-    print(study.trials_dataframe())
 
 
 def create_new_trial_object(trial_info_dict):

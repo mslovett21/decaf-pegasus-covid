@@ -7,3 +7,6 @@
 2020-09-06 20:44:12,484 - manager_log - INFO - No previous memory file available.
 2020-09-06 20:44:12,484 - manager_log - INFO - No message for the worker with ID: 0
 2020-09-06 20:48:19,569 - manager_log - INFO - No previous trials recorded from this worker 
+2020-09-06 21:33:34,296 - manager_log - INFO - No previous memory file available.
+2020-09-06 21:33:34,296 - manager_log - INFO - No message for the worker with ID: 0
+2020-09-06 21:34:05,906 - manager_log - INFO - No previous trials recorded from this worker 
