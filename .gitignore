@@ -2,7 +2,7 @@ datasets/
 runs/
 saved/
 trainer/__pycache__/
-*.txt
+fast.txt
 dataloader/__pycache__/
 model/__pycache__/
 utils/__pycache__/

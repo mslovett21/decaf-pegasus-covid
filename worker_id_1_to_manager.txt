@@ -1,0 +1,2 @@
+{'optimizer': 'Adam', 'weight_decay': 0.00030238417060408793, 'learning_rate': 3.7617520347549393e-06, 'worker_id': 1, 'value': 0.1428571428571428}
+{'optimizer': 'RMSprop', 'weight_decay': 0.0560467627843438, 'learning_rate': 7.643195253422718e-06, 'worker_id': 1, 'value': 0.13605442176870744}

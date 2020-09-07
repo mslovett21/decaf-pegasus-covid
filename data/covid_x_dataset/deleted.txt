@@ -1,0 +1,11 @@
+TRAIN
+163 covid-19-pneumonia-20-pa-on-admission.jpg COVID-19
+3 SARS-10.1148rg.242035193-g04mr34g0-Fig8a-day0.jpeg pneumonia
+169 covid-19-pneumonia-44-day-0.jpeg COVID-19
+117 covid-19-pneumonia-evolution-over-a-week-1-day0-PA.jpg COVID-19
+94 6b44464d-73a7-4cf3-bbb6-ffe7168300e3.annot.original.jpeg COVID-19
+98 covid-19-infection-exclusive-gastrointestinal-symptoms-l.png COVID-19
+62 ciaa199.pdf-001-c.png COVID-19
+163 covid-19-pneumonia-20.jpg COVID-19
+TEST
+8 SARS-10.1148rg.242035193-g04mr34g05x-Fig5-day9.jpeg pneumonia

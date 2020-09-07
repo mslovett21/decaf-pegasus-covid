@@ -2,7 +2,7 @@ import optuna
 from optuna.distributions import UniformDistribution, CategoricalDistribution,LogUniformDistribution
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 
-#from IPython import embed
+from IPython import embed
 
 def prepare_message(list_of_trials, worker_id):
 
@@ -35,6 +35,8 @@ def get_message_from_manager(study, WORKER_ID):
     f_receive = open("manager_to_worker_id_{}.txt".format(WORKER_ID))
     info_line = f_receive.readline()
     print(study.trials_dataframe())
+
+    embed()
     
     while info_line:
         info_dict = eval(info_line)
