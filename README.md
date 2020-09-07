@@ -12,13 +12,13 @@ python main.py --worker_id 0 --epochs 1 --trials 2
 ```
 These runs produce the following two text files: <br>
 <br>
-**worker_id_0_to_manager.txt** :
+**worker_id_0_to_manager.txt**
 
 ```
 {'optimizer': 'SGD', 'weight_decay': 0.020892347311734047, 'learning_rate': 3.4722760860520766e-07, 'worker_id': 0, 'value': 0.07482993197278912}
 {'optimizer': 'RMSprop', 'weight_decay': 0.0001983594447281459, 'learning_rate': 1.329122307006713e-06, 'worker_id': 0, 'value': 0.1428571428571428}
 ```
-and **worker_id_1_to_manager.txt**:
+and **worker_id_1_to_manager.txt**
 ```
 {'optimizer': 'Adam', 'weight_decay': 0.00030238417060408793, 'learning_rate': 3.7617520347549393e-06, 'worker_id': 1, 'value': 0.1428571428571428}
 {'optimizer': 'RMSprop', 'weight_decay': 0.0560467627843438, 'learning_rate': 7.643195253422718e-06, 'worker_id': 1, 'value': 0.13605442176870744}
@@ -30,6 +30,7 @@ python manager.py 0
 ```
 
 that creates **manager_memory.csv** (when it runs first time). <br>
+<br>
 It adds trials from **worker_id_0_to_manager.txt** to **manager_memory.csv**
 
 ```
@@ -44,10 +45,16 @@ python manager.py 1
 ```
 This will add trials from **worker_id_1_to_manager.txt** to **manager_memory.csv**  <br>
 <br>
-Additionally it creates a file called:
+Additionally it creates a file called **manager_to_worker_id_1.txt** with the trials from manager that
+were added by other workers since the last communication between the worker 1 and manager.
 
 ```
-manager_to_worker_id_1.txt
+{'optimizer': 'SGD', 'weight_decay': 0.020892347311734047, 'learning_rate': 3.4722760860520766e-07, 'worker_id': 0, 'value': 0.07482993197278913}
+{'optimizer': 'RMSprop', 'weight_decay': 0.0001983594447281459, 'learning_rate': 1.329122307006713e-06, 'worker_id': 0, 'value': 0.1428571428571428}
+```
+Then if you run:
+```
+python main.py --worker_id 1 --epochs 1 --trials 6
 ```
 
 ### Training
