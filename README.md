@@ -61,7 +61,6 @@ were added by other workers since the last communication between the worker 1 an
 Then if you run:
 ```
 python main.py --worker_id 1 --epochs 1 --trials 6
-
 ```
 At the end of the execution of the command - the STUDY object will contain results of 8 trials:<br>
 2 trials from previous execution,then the script will decide to execute 4 more trials. <br>
