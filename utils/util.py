@@ -125,9 +125,8 @@ def read_filepaths(file):
 
 
 class MetricTracker:
-    def __init__(self, *keys, writer=None, mode='/'):
+    def __init__(self, *keys, mode='/'):
 
-        self.writer = writer
         self.mode = mode + '/'
         self.keys = keys
         self._data = pd.DataFrame(index=keys, columns=['total', 'counts', 'average'])
@@ -138,8 +137,6 @@ class MetricTracker:
             self._data[col].values[:] = 0
 
     def update(self, key, value, n=1, writer_step=1):
-        if self.writer is not None:
-            self.writer.add_scalar(self.mode + key, value, writer_step)
         self._data.total[key] += value * n
         self._data.counts[key] += n
         self._data.average[key] = self._data.total[key] / self._data.counts[key]
@@ -162,41 +159,6 @@ class MetricTracker:
 
         return s
 
-
-class Metrics:
-    def __init__(self, path, keys=None, writer=None):
-        self.writer = writer
-
-        self.data = {'correct': 0,
-                     'total': 0,
-                     'loss': 0,
-                     'accuracy': 0,
-                     }
-        self.save_path = path
-
-    def reset(self):
-        for key in self.data:
-            self.data[key] = 0
-
-    def update_key(self, key, value, n=1):
-        if self.writer is not None:
-            self.writer.add_scalar(key, value)
-        self.data[key] += value
-
-    def update(self, values):
-        for key in self.data:
-            self.data[key] += values[key]
-
-    def avg_acc(self):
-        return self.data['correct'] / self.data['total']
-
-    def avg_loss(self):
-        return self.data['loss'] / self.data['total']
-
-    def save(self):
-        with open(self.save_path, 'w') as save_file:
-            a = 0  # csv.writer()
-            # TODO
 
 
 def select_model(args):

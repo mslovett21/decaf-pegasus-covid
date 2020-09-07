@@ -2,7 +2,7 @@ import optuna
 from optuna.distributions import UniformDistribution, CategoricalDistribution,LogUniformDistribution
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 
-from IPython import embed
+#from IPython import embed
 
 def prepare_message(list_of_trials, worker_id):
 
@@ -12,6 +12,7 @@ def prepare_message(list_of_trials, worker_id):
         trial_info["worker_id"] = worker_id
         trial_info["value"] = trial.value
         message_to_pass.append(trial_info)
+    
     return message_to_pass
 
 
@@ -20,7 +21,7 @@ def send_message_to_manager(study,exchange_rate,worker_id):
 
     message_to_send = prepare_message(study.trials[-exchange_rate:], worker_id)
     f_send = open("worker_id_{}_to_manager.txt".format(worker_id),"w")
-    print(f_send)
+
     for line in message_to_send:
         f_send.write( str(line))
         f_send.write("\n")
@@ -28,27 +29,32 @@ def send_message_to_manager(study,exchange_rate,worker_id):
     f_send.close()
 
 
-def get_message_from_manager(study):
+def get_message_from_manager(study, WORKER_ID):
+    print("MESSAGE FROM MANAGER")
 
-    f_receive = open("manager_to_worker_id{}.txt".format(WORKER_ID))
+    f_receive = open("manager_to_worker_id_{}.txt".format(WORKER_ID))
     info_line = f_receive.readline()
+    print(study.trials_dataframe())
+    
     while info_line:
         info_dict = eval(info_line)
         new_trial = create_new_trial_object(info_dict)
         study.add_trial(new_trial)
-        print("New trial was added")
         info_line = f_receive.readline()
+    print("-----After-----")
+    print(study.trials_dataframe())
 
 
 def create_new_trial_object(trial_info_dict):
-    embed()
     
     new_trial = optuna.trial.create_trial(
-        params = {"dropout": trial_info_dict["dropout"] ,"optimizer": trial_info_dict["optimizer"], "lr":trial_info_dict["lr"] },
-        distributions = {"dropout": UniformDistribution(0.2, 0.5),
-        "optimizer" : CategoricalDistribution(choices=('Adam', 'RMSprop')),
-        "lr": LogUniformDistribution(1e-05,0.1)},
+        params = {"optimizer": trial_info_dict["optimizer"],
+                "weight_decay":trial_info_dict["weight_decay"],
+                "learning_rate":trial_info_dict["learning_rate"]},
+        distributions = {"optimizer" : CategoricalDistribution(choices=("Adam", "RMSprop", "SGD")),
+                        "weight_decay": LogUniformDistribution(1e-5, 1e-1),
+                        "learning_rate": LogUniformDistribution(1e-7, 1e-5)},
         value= trial_info_dict["value"],)
-    #new_trial.user_attr = ("worker_id",trial_info_dict["worker_id"])
+    new_trial.user_attrs = {"worker_id": trial_info_dict["worker_id"]}
     
     return new_trial

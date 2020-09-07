@@ -49,12 +49,12 @@ def initialize(args):
     return model, training_generator, val_generator, test_generator
 
 
-def train(args, model, trainloader, optimizer, epoch, writer):
+def train(args, model, trainloader, optimizer, epoch):
     
     start_time = time.time()
     model.train()
 
-    train_metrics = MetricTracker(*[m for m in METRICS_TRACKED], writer=writer, mode='train')
+    train_metrics = MetricTracker(*[m for m in METRICS_TRACKED], mode='train')
     w2 = torch.Tensor([1.0,1.0,1.5]).cuda() #torch.Tensor([1.456,1.0,15.71]).cuda()
     train_metrics.reset()
     # JUST FOR CHECK
@@ -74,7 +74,6 @@ def train(args, model, trainloader, optimizer, epoch, writer):
 
         loss,counter = weighted_loss(output, target,w2)
         counter_covid += counter
-#        print("{} of {} have covid".format(counter_covid,counter_batches))
         loss.backward()
 
         optimizer.step()
@@ -91,11 +90,11 @@ def train(args, model, trainloader, optimizer, epoch, writer):
     return train_metrics
 
 
-def validation(args, model, testloader, epoch, writer):
+def validation(args, model, testloader, epoch):
     
     model.eval()
     
-    val_metrics = MetricTracker(*[m for m in METRICS_TRACKED], writer=writer, mode='val')
+    val_metrics = MetricTracker(*[m for m in METRICS_TRACKED], mode='val')
     val_metrics.reset()
     w_full = torch.Tensor([1.456,1.0,15.71]).cuda()
     w2 = torch.Tensor([1.0,1.0,1.5]).cuda()
@@ -128,6 +127,6 @@ def validation(args, model, testloader, epoch, writer):
 
 
     print_summary(args, epoch, num_samples, val_metrics, mode="Validation")
-    print('Confusion Matrix{}'.format(confusion_matrix.cpu().numpy()))
+    print('Confusion Matrix\n {}'.format(confusion_matrix.cpu().numpy()))
     
     return val_metrics, confusion_matrix

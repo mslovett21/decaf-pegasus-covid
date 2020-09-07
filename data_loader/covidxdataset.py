@@ -48,7 +48,7 @@ class COVIDxDataset(Dataset):
         elif (mode == 'test'):
             self.paths, self.labels = read_filepaths(testfile)
             self.transform = val_transformer
-        print("{} examples =  {}".format(mode, len(self.paths)))
+#        print("{} examples =  {}".format(mode, len(self.paths)))
         self.mode = mode
         self.i = 0
         

@@ -1,33 +1,6 @@
-2020-09-05 17:14:43,670 - manager_log - INFO - No previous memory file available.
-2020-09-05 17:14:43,670 - manager_log - ERROR - File with a message from worker does not exist.
-2020-09-05 19:46:27,388 - manager_log - INFO - No previous memory file available.
-2020-09-05 19:46:27,388 - manager_log - ERROR - File with a message from worker does not exist.
-2020-09-05 19:46:30,976 - manager_log - INFO - No previous memory file available.
-2020-09-05 20:33:34,268 - manager_log - INFO - No previous memory file available.
-2020-09-06 09:54:26,938 - manager_log - INFO - No previous memory file available.
-2020-09-06 10:08:28,967 - manager_log - INFO - No message for the worker with ID: 1
-2020-09-06 10:10:32,066 - manager_log - INFO - No message for the worker with ID: 1
-2020-09-06 10:10:49,632 - manager_log - INFO - No message for the worker with ID: 1
-2020-09-06 10:12:34,216 - manager_log - INFO - No previous memory file available.
-2020-09-06 10:12:34,216 - manager_log - INFO - No message for the worker with ID: 1
-2020-09-06 10:16:59,880 - manager_log - INFO - No message for the worker with ID: 0
-2020-09-06 10:17:26,122 - manager_log - INFO - No message for the worker with ID: 0
-2020-09-06 10:17:47,276 - manager_log - INFO - No message for the worker with ID: 0
-2020-09-06 10:17:53,868 - manager_log - INFO - No previous memory file available.
-2020-09-06 10:17:53,869 - manager_log - INFO - No message for the worker with ID: 0
-2020-09-06 10:21:44,676 - manager_log - INFO - No message for the worker with ID: 0
-2020-09-06 10:22:06,532 - manager_log - INFO - No previous memory file available.
-2020-09-06 10:22:06,532 - manager_log - INFO - No message for the worker with ID: 0
-2020-09-06 10:23:21,396 - manager_log - INFO - No message for the worker with ID: 1
-2020-09-06 10:23:40,063 - manager_log - INFO - No previous memory file available.
-2020-09-06 10:23:40,064 - manager_log - INFO - No message for the worker with ID: 0
-2020-09-06 11:21:59,584 - manager_log - INFO - No message for the worker with ID: 1
-2020-09-06 12:03:01,833 - manager_log - INFO - No message for the worker with ID: 1
-2020-09-06 12:03:14,914 - manager_log - INFO - No previous memory file available.
-2020-09-06 12:03:41,498 - manager_log - INFO - No previous memory file available.
-2020-09-06 12:03:41,498 - manager_log - INFO - No message for the worker with ID: 0
-2020-09-06 12:04:01,879 - manager_log - INFO - No previous trials recorded from this worker 
-2020-09-06 12:04:29,407 - manager_log - INFO - No previous trials recorded from this worker 
-2020-09-06 12:14:29,483 - manager_log - INFO - No previous memory file available.
-2020-09-06 12:14:29,483 - manager_log - INFO - No message for the worker with ID: 1
-2020-09-06 12:14:55,310 - manager_log - INFO - No previous trials recorded from this worker 
+2020-09-06 17:15:37,087 - manager_log - INFO - No previous memory file available.
+2020-09-06 17:15:37,087 - manager_log - INFO - No message for the worker with ID: 0
+2020-09-06 17:18:25,809 - manager_log - INFO - No previous trials recorded from this worker 
+2020-09-06 17:50:09,195 - manager_log - INFO - No previous memory file available.
+2020-09-06 17:50:09,195 - manager_log - INFO - No message for the worker with ID: 0
+2020-09-06 17:56:05,308 - manager_log - INFO - No previous trials recorded from this worker 

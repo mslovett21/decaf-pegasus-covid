@@ -6,8 +6,6 @@ import pandas as pd
 from IPython import embed
 
 
-MANAGER_MEMORY_FILE = "manager_memory.csv"
-
 
 ### ------------------------- LOGGER--------------------------------
 logger = logging.getLogger('manager_log')
@@ -21,6 +19,9 @@ logger.addHandler(fh)
 ### ------------------------- PARSER --------------------------------
 parser = argparse.ArgumentParser(description='Manager for sharing HPO results between workers')
 parser.add_argument('worker_id',  metavar='worker_id', type=int, nargs=1, help = "worker id")
+
+MANAGER_MEMORY_FILE = "manager_memory.csv"
+
 
 
 
