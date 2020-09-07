@@ -2,12 +2,13 @@ datasets/
 runs/
 saved/
 trainer/__pycache__/
-fast.txt
 dataloader/__pycache__/
 model/__pycache__/
 utils/__pycache__/
 data_loader/__pycache__/
+communication/__pycache__/
 *.npy
 LICENSE
 *.pkl
 *.log
+fast.txt
