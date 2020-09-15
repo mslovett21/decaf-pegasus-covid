@@ -1,2 +1,0 @@
-{'optimizer': 'RMSprop', 'weight_decay': 0.0029527134878696453, 'learning_rate': 1.480510371973113e-06, 'worker_id': 0, 'value': 0.1428571428571428}
-{'optimizer': 'SGD', 'weight_decay': 0.012962593884789587, 'learning_rate': 2.6737290192971144e-06, 'worker_id': 0, 'value': 0.1428571428571428}

@@ -7,37 +7,32 @@ import torch
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 import torch.optim as optim
 
-
 import utils.util as util
 from communication.communication import send_message_to_manager, create_new_trial_object,get_message_from_manager
 from trainer.train import initialize, train, validation
 from IPython import embed
 
-
 import optuna
 from optuna.distributions import UniformDistribution, CategoricalDistribution,LogUniformDistribution
 optuna.logging.set_verbosity(optuna.logging.ERROR)
-
 
 ### ------------------------- LOGGER--------------------------------
 logger = logging.getLogger('tunning_log')
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-
-
-
-DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-MODEL      = 'COVIDNet_small'
-EPOCHS     = 10
-BATCH_SIZE = 12
-WORKER_ID  = 0 
-STUDY      = None
-TOTAL_TRIALS  = 10
-EXCHANGE_RATE = 2
-OWN_NEW_TRIALS    = 0
-LOG_DIR = 'logs/'
 ARGS = ""
+MODEL = 'COVIDNet_small'
+STUDY = None
+EPOCHS = 10
+#DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+LOG_DIR = 'logs/'
+WORKER_ID = 0 
+BATCH_SIZE = 12
+TOTAL_TRIALS = 10
+EXCHANGE_RATE = 2
+OWN_NEW_TRIALS = 0
+
 
 
 def get_arguments():
@@ -46,11 +41,11 @@ def get_arguments():
     
     parser.add_argument('--batch_size', type=int, default=10, help='batch size for training')
     parser.add_argument('--log_interval', type=int, default=500, help='steps to print metrics and loss')
-    parser.add_argument('--dataset_name', type=str, default='COVIDx', help='dataset name COVIDx')
+    parser.add_argument('--cuda', type=int, default=1, help='use gpu support')
     parser.add_argument('--device', type=int, default=0, help='gpu device')
+    parser.add_argument('--dataset_name', type=str, default='COVIDx', help='dataset name COVIDx')
     parser.add_argument('--seed', type=int, default=123, help='select seed number for reproducibility')
     parser.add_argument('--classes', type=int, default=3, help='dataset classes')
-    parser.add_argument('--cuda', action='store_true', default=True, help='use gpu for speed-up')
     parser.add_argument('--resume', default='', type=str, metavar='PATH',help='path to latest checkpoint (default: none)')
     parser.add_argument('--model', type=str, default='COVIDNet_small',choices=('COVIDNet_small', 'resnet18', 'COVIDNet_large'))
     parser.add_argument('--root_path', type=str, default='./data',help='path to dataset ')
@@ -154,7 +149,7 @@ def main():
     EXCHANGE_RATE = ARGS.ex_rate
     MODEL         = ARGS.model
 
-    fh = logging.FileHandler(LOG_DIR+'main_worker_{}.log'.format(WORKER_ID))
+    fh = logging.FileHandler(LOG_DIR + 'main_worker_{}.log'.format(WORKER_ID))
     fh.setFormatter(formatter)
     logger.addHandler(fh)
 

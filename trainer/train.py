@@ -55,7 +55,11 @@ def train(args, model, trainloader, optimizer, epoch):
     model.train()
 
     train_metrics = MetricTracker(*[m for m in METRICS_TRACKED], mode='train')
-    w2 = torch.Tensor([1.0,1.0,1.5]).cuda() #torch.Tensor([1.456,1.0,15.71]).cuda()
+    w2 = torch.Tensor([1.0,1.0,1.5])
+    
+    if (args.cuda):
+        w2.cuda()
+    
     train_metrics.reset()
     # JUST FOR CHECK
     counter_batches = 0
@@ -96,8 +100,10 @@ def validation(args, model, testloader, epoch):
     
     val_metrics = MetricTracker(*[m for m in METRICS_TRACKED], mode='val')
     val_metrics.reset()
-    w_full = torch.Tensor([1.456,1.0,15.71]).cuda()
-    w2 = torch.Tensor([1.0,1.0,1.5]).cuda()
+    w2 = torch.Tensor([1.0,1.0,1.5]) #w_full = torch.Tensor([1.456,1.0,15.71])
+    
+    if (args.cuda):
+        w2.cuda()
     
     confusion_matrix = torch.zeros(args.classes, args.classes)
     
