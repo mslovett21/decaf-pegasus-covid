@@ -1,2 +1,2 @@
-{'optimizer': 'SGD', 'weight_decay': 0.025224293675874917, 'learning_rate': 7.989263969990709e-07, 'worker_id': 0, 'value': 0.07482993197278912}
-{'optimizer': 'Adam', 'weight_decay': 0.021108869027856463, 'learning_rate': 1.0463959726032452e-07, 'worker_id': 0, 'value': 0.1428571428571428}
+{'optimizer': 'RMSprop', 'weight_decay': 0.009803332080071397, 'learning_rate': 4.970410125776204e-07, 'worker_id': 0, 'value': 0.1428571428571428}
+{'optimizer': 'RMSprop', 'weight_decay': 0.0005961762407034747, 'learning_rate': 8.287685652069783e-07, 'worker_id': 0, 'value': 0.1428571428571428}
