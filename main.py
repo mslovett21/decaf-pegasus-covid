@@ -39,9 +39,9 @@ def get_arguments():
     
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('--batch_size', type=int, default=10, help='batch size for training')
-    parser.add_argument('--log_interval', type=int, default=500, help='steps to print metrics and loss')
-    parser.add_argument('--cuda', type=int, default=1, help='use gpu support')
+    parser.add_argument('--batch_size', type=int, default=12, help='batch size for training')
+    parser.add_argument('--log_interval', type=int, default=200, help='steps to print metrics and loss')
+    parser.add_argument('--cuda', type=int, default=0, help='use gpu support')
     parser.add_argument('--device', type=int, default=0, help='gpu device')
     parser.add_argument('--dataset_name', type=str, default='COVIDx', help='dataset name COVIDx')
     parser.add_argument('--seed', type=int, default=123, help='select seed number for reproducibility')
@@ -113,8 +113,6 @@ def create_study(hpo_checkpoint_file, args):
     try:
         STUDY = joblib.load("hpo_study_checkpoint_{}_{}.pkl".format(MODEL, WORKER_ID))
         todo_trials = TOTAL_TRIALS - len(STUDY.trials_dataframe())
-        embed()
-        print(STUDY.trials_dataframe())
         if todo_trials > 0 :
             logger.info("There are {} trial(s) to do out of {}".format(todo_trials, TOTAL_TRIALS))
             STUDY.optimize(objective, n_trials=todo_trials, timeout=600, callbacks=[hpo_global_update])
@@ -162,6 +160,7 @@ def main():
         logger.info(e)    
     finally:
         hpo_monitor(STUDY)
+        print(STUDY.trials_dataframe())
 
     return 0
 
