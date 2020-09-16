@@ -1,3 +1,17 @@
+#  DECAF
+
+Decaf workflow consists of master and worker tasks (master.py and worker.py). Master emulates the database, and it governs the workflow where
+user can set the number of total trials, (data) exchange rate with the worker(s), and the checkpoint frequency for the STUDY object.
+
+Worker is analogous to main.py, where user can set different arguments such as number of epochs or the device.
+All of these arguments are given at optuna-covid19.py, which is Decaf's python API for workflow graph definition.
+
+To run it with Decaf, first copy pybredala and pydecaf modules from the Decaf installation folder. Then, do the following:
+```
+$ python3 optuna-covid19.py
+$ sh optuna.sh
+```
+
 # COVIDNet
 
 Publication: https://arxiv.org/pdf/2003.09871.pdf <br>
@@ -126,3 +140,4 @@ The network takes as input an image of shape (N, 224, 224, 3) and outputs the so
 |:-----:|:------:|:---------:|:--------:|:-----:|
 | train |  7966  |    8514   |    66    | 16546 |
 |  test |   100  |     100   |    10    |   210 |
+
