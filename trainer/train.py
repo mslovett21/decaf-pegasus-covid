@@ -58,6 +58,8 @@ def train(args, model, trainloader, optimizer, epoch):
     w2 = torch.Tensor([1.0,1.0,1.5])
     
     if (args.cuda):
+        print("CUDA true")
+        model.cuda()
         w2.cuda()
     
     train_metrics.reset()

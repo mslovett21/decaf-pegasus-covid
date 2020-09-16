@@ -78,8 +78,7 @@ def objective(trial):
         train(ARGS, model, training_generator, optimizer, epoch)        
         val_metrics, confusion_matrix = validation(ARGS, model, val_generator, epoch)
         scheduler.step(val_metrics._data.average.loss)
-#        if epoch%5 == 0:
-#            best_pred_loss = util.save_model(model, optimizer, ARGS, val_metrics, epoch, best_pred_loss, confusion_matrix)
+
    
     return val_metrics._data.average.recall_mean
 
@@ -87,7 +86,8 @@ def objective(trial):
 def hpo_monitor(study):
     joblib.dump(study,"hpo_study_checkpoint_{}_{}.pkl".format(MODEL, WORKER_ID))
 
-#TODO: check if updates correctly
+
+
 def hpo_global_update(study, trial):
     
     global OWN_NEW_TRIALS
@@ -105,13 +105,15 @@ def hpo_global_update(study, trial):
     hpo_monitor(study)
 
 
-def create_study(hpo_checkpoint_file):
+
+def create_study(hpo_checkpoint_file, args):
    
     global STUDY
 
     try:
         STUDY = joblib.load("hpo_study_checkpoint_{}_{}.pkl".format(MODEL, WORKER_ID))
         todo_trials = TOTAL_TRIALS - len(STUDY.trials_dataframe())
+        embed()
         print(STUDY.trials_dataframe())
         if todo_trials > 0 :
             logger.info("There are {} trial(s) to do out of {}".format(todo_trials, TOTAL_TRIALS))
@@ -135,13 +137,13 @@ def main():
     ARGS = get_arguments()   
     SEED = ARGS.seed
     
-    torch.manual_seed(SEED)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False    
+    torch.manual_seed(SEED)   
     np.random.seed(SEED)
        
     if (ARGS.cuda):
         torch.cuda.manual_seed(SEED)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False 
     
     EPOCHS        = ARGS.epochs
     TOTAL_TRIALS  = ARGS.trials
@@ -154,8 +156,8 @@ def main():
     logger.addHandler(fh)
 
     try:
-        hpo_checkpoint_file = "hpo_study_checkpoint_{}_{}.pkl".format(MODEL, WORKER_ID)
-        create_study(hpo_checkpoint_file)   
+        hpo_checkpoint_file = "hpo_study_checkpoint_{}_{}.pkl".format(ARGS.model, WORKER_ID)
+        create_study(hpo_checkpoint_file, ARGS)   
     except Exception as e:
         logger.info(e)    
     finally:
