@@ -1,4 +1,35 @@
-# COVIDNet
+# COVIDNet OPTUNA-DB EXPERIMENT
+
+## TEST LOCALLY WITHOUT DATABASE
+
+To test the script locally without database run
+```
+python main_optuna_test.py
+```
+
+Check available options
+
+```
+python main_optuna_test.py -- help
+```
+with whatever options you would like. The script currently uses only 300 images for training and 72 images for testing.
+
+## Running distributed HPO with OPTUNA
+
+https://optuna.readthedocs.io/en/stable/tutorial/004_distributed.html
+
+First, create a shared study using optuna create-study command (or using optuna.create_study() in a Python script).
+```
+$ optuna create-study --study-name "distributed-example" --storage "sqlite:///example.db"
+[I 2020-07-21 13:43:39,642] A new study created with name: distributed-example
+```
+Add database as storage to the optimization script in main_optuna_db.py 
+
+```
+study = optuna.load_study(study_name='distributed-example', storage='sqlite:///example.db')
+```
+
+## PAPERS RELATED TO THE PROJECT
 
 Publication: https://arxiv.org/pdf/2003.09871.pdf <br>
 Original work: https://github.com/lindawangg/COVID-Net <br>
