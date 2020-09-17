@@ -33,14 +33,13 @@ EXCHANGE_RATE = 2
 OWN_NEW_TRIALS = 0
 
 
-
 def get_arguments():
     
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('--batch_size', type=int, default=10, help='batch size for training')
-    parser.add_argument('--log_interval', type=int, default=500, help='steps to print metrics and loss')
-    parser.add_argument('--cuda', type=int, default=1, help='use gpu support')
+    parser.add_argument('--batch_size', type=int, default=12, help='batch size for training')
+    parser.add_argument('--log_interval', type=int, default=200, help='steps to print metrics and loss')
+    parser.add_argument('--cuda', type=int, default=0, help='use gpu support')
     parser.add_argument('--device', type=int, default=0, help='gpu device')
     parser.add_argument('--dataset_name', type=str, default='COVIDx', help='dataset name COVIDx')
     parser.add_argument('--seed', type=int, default=123, help='select seed number for reproducibility')
@@ -50,7 +49,7 @@ def get_arguments():
     parser.add_argument('--root_path', type=str, default='./data',help='path to dataset ')
     parser.add_argument('--save', type=str, default='./saved/COVIDNet' + util.datestr(),help='path to checkpoint save directory ')
     parser.add_argument('--epochs', type=int,default=1, help = "number of training epochs")
-    parser.add_argument('--trials', type=int, default=2, help = "number of HPO trials")
+    parser.add_argument('--trials', type=int, default=4, help = "number of HPO trials")
     parser.add_argument('--worker_id', type=int, default=0, help = "worker id")
     parser.add_argument('--ex_rate',type=int,default=2, help = "info exchange rate in HPO")
     
@@ -82,7 +81,6 @@ def objective(trial):
 
 
 def hpo_monitor(study):
-    embed()
     print(study.trials_dataframe())
     joblib.dump(study,"hpo_study_checkpoint_optuna_{}_{}.pkl".format(MODEL, WORKER_ID))
 
@@ -120,12 +118,13 @@ def main():
     SEED = ARGS.seed
     
     torch.manual_seed(SEED)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False    
     np.random.seed(SEED)
+
        
     if (ARGS.cuda):
         torch.cuda.manual_seed(SEED)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False   
     
     EPOCHS        = ARGS.epochs
     TOTAL_TRIALS  = ARGS.trials
@@ -144,6 +143,7 @@ def main():
         logger.info(e)    
     finally:
         hpo_monitor(STUDY)
+        print(STUDY.trials_dataframe())
 
     return 0
 
