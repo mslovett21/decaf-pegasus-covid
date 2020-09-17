@@ -1,2 +1,0 @@
-{'optimizer': 'Adam', 'weight_decay': 1.682550083045631e-05, 'learning_rate': 5.829497905095265e-07, 'worker_id': 1, 'value': 0.1428571428571428}
-{'optimizer': 'Adam', 'weight_decay': 2.4045871197311863e-05, 'learning_rate': 1.6248444415438614e-07, 'worker_id': 1, 'value': 0.1428571428571428}
