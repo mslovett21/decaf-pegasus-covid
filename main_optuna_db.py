@@ -22,15 +22,12 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 
 ARGS = ""
 MODEL = 'COVIDNet_small'
-STUDY = None
 EPOCHS = 10
-#DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 LOG_DIR = 'logs/'
 WORKER_ID = 0 
 BATCH_SIZE = 12
-TOTAL_TRIALS = 10
-EXCHANGE_RATE = 2
-OWN_NEW_TRIALS = 0
+#DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 
 
 def get_arguments():
@@ -70,8 +67,9 @@ def objective(trial):
     scheduler = ReduceLROnPlateau(optimizer, factor=0.5, patience=2, min_lr=1e-5, verbose=True)
 
     best_pred_loss = 1000.0
+    epochs = ARGS.epochs
         
-    for epoch in range(1, EPOCHS + 1):
+    for epoch in range(1, epochs + 1):
         
         train(ARGS, model, training_generator, optimizer, epoch)        
         val_metrics, confusion_matrix = validation(ARGS, model, val_generator, epoch)
@@ -80,56 +78,52 @@ def objective(trial):
     return val_metrics._data.average.recall_mean
 
 
-def hpo_monitor(study):
-    print(study.trials_dataframe())
+def hpo_monitor(study,trial):
+    joblib.dump(study,"hpo_study_checkpoint_optuna_{}_{}.pkl".format(MODEL, WORKER_ID))
+
+
+def final_hpo_monitor(study):
     joblib.dump(study,"hpo_study_checkpoint_optuna_{}_{}.pkl".format(MODEL, WORKER_ID))
 
 
 
-
-def create_study(hpo_checkpoint_file):
+def create_study(hpo_checkpoint_file, total_trials):
    
-    global STUDY
-
     try:
-        STUDY = joblib.load("hpo_study_checkpoint_optuna_{}_{}.pkl".format(MODEL, WORKER_ID))
-        todo_trials = TOTAL_TRIALS - len(STUDY.trials_dataframe())
-        print(STUDY.trials_dataframe())
+        study = joblib.load("hpo_study_checkpoint_optuna_{}_{}.pkl".format(MODEL, WORKER_ID))
+        todo_trials = total_trials - len(study.trials_dataframe())
         if todo_trials > 0 :
-            logger.info("There are {} trial(s) to do out of {}".format(todo_trials, TOTAL_TRIALS))
-            STUDY.optimize(objective, n_trials=todo_trials, timeout=600, callbacks=[hpo_monitor])
+            logger.info("There are {} trial(s) to do out of {}".format(todo_trials, total_trials))
+            print("There are {} trial(s) to do out of {}".format(todo_trials, total_trials))
+            study.optimize(objective, n_trials=todo_trials, timeout=600, callbacks=[hpo_monitor])
     except:
-        STUDY = optuna.create_study(direction = 'maximize', study_name = MODEL)
-        STUDY.set_user_attr("worker_id", WORKER_ID)
-        STUDY.optimize(objective, n_trials=TOTAL_TRIALS, timeout=600, callbacks=[hpo_monitor])
+        study = optuna.create_study(direction = 'maximize', study_name = MODEL)
+        study.set_user_attr("worker_id", WORKER_ID)
+        study.optimize(objective, n_trials=total_trials, timeout=600, callbacks=[hpo_monitor])
+    return study
 
 
 
 def main():
     
     global MODEL
-    global EPOCHS
-    global TOTAL_TRIALS
     global WORKER_ID
-    global EXCHANGE_RATE
     global ARGS
     
     ARGS = get_arguments()   
-    SEED = ARGS.seed
+    seed = ARGS.seed
     
-    torch.manual_seed(SEED)
-    np.random.seed(SEED)
+    torch.manual_seed(seed)
+    np.random.seed(seed)
 
        
     if (ARGS.cuda):
-        torch.cuda.manual_seed(SEED)
+        torch.cuda.manual_seed(seed)
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False   
     
-    EPOCHS        = ARGS.epochs
-    TOTAL_TRIALS  = ARGS.trials
+    total_trials  = ARGS.trials
     WORKER_ID     = ARGS.worker_id
-    EXCHANGE_RATE = ARGS.ex_rate
     MODEL         = ARGS.model
 
     fh = logging.FileHandler(LOG_DIR + 'main_worker_{}.log'.format(WORKER_ID))
@@ -138,12 +132,12 @@ def main():
 
     try:
         hpo_checkpoint_file = "hpo_study_checkpoint_optuna_{}_{}.pkl".format(MODEL, WORKER_ID)
-        create_study(hpo_checkpoint_file)   
+        study = create_study(hpo_checkpoint_file, total_trials)   
     except Exception as e:
         logger.info(e)    
     finally:
-        hpo_monitor(STUDY)
-        print(STUDY.trials_dataframe())
+        final_hpo_monitor(study)
+        print(study.trials_dataframe())
 
     return 0
 
