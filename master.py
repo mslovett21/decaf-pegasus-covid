@@ -95,14 +95,14 @@ def main():
         #TODO check whether this will create a problem when there is pruning.
         TOTAL_TRIALS-= int(len(trial_values)/5)
         print("remained this many trials at MASTER : " + str(TOTAL_TRIALS))
+        rate = min(TOTAL_TRIALS, EXCHANGE_RATE)
         #orc: send back the trial_info to the workers, together with the communication frequency we want.
         out_trial = bd.VectorFieldf(trial_values, 5)
-        data = bd.SimpleFieldi(EXCHANGE_RATE)
+        data = bd.SimpleFieldi(rate)
         container_out = bd.pSimple()
         container_out.get().appendData("out_trial", out_trial, bd.DECAF_NOFLAG, bd.DECAF_PRIVATE, bd.DECAF_SPLIT_KEEP_VALUE, bd.DECAF_MERGE_DEFAULT)
         container_out.get().appendData("rate", data, bd.DECAF_NOFLAG, bd.DECAF_PRIVATE, bd.DECAF_SPLIT_KEEP_VALUE, bd.DECAF_MERGE_DEFAULT)
         decaf.put(container_out,"out")
-
 
     print("master at rank " + str(r) + " terminating")
     decaf.terminate()

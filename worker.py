@@ -125,7 +125,7 @@ def create_study(hpo_checkpoint_file, decaf):
                     STUDY.add_trial(new_trial)
                     print("New trial was added at worker at rank " + str(WORKER_ID))
 
-        print("performing more trials...")
+        print("performing more " + str(rate) + " trials...")
         if rate > 0 :
             STUDY.optimize(objective, n_trials=rate, timeout=600)
 
@@ -136,30 +136,31 @@ def create_study(hpo_checkpoint_file, decaf):
         print(trial)
         print("  Value: ", trial.value)
 
-        #orc: send the trial_info to the master
-        completed_trials = STUDY.trials[-rate:]
-        trial_values = []
-        for trial in completed_trials:
-            dpv = trial.params['weight_decay']
-            opt = trial.params['optimizer']
-            if opt == "Adam" :
-                opt_ctg = 0
-            elif opt == "RMSprop" :
-                opt_ctg = 1
-            else:
-                opt_ctg = 2
-            lrv = trial.params['learning_rate']
-            acv = trial.value
-            trial_values.append(dpv)
-            trial_values.append(opt_ctg)
-            trial_values.append(lrv)
-            trial_values.append(acv)
-            trial_values.append(WORKER_ID)
+        if (rate > 0):
+            #orc: send the trial_info to the master
+            completed_trials = STUDY.trials[-rate:]
+            trial_values = []
+            for trial in completed_trials:
+                dpv = trial.params['weight_decay']
+                opt = trial.params['optimizer']
+                if opt == "Adam" :
+                    opt_ctg = 0
+                elif opt == "RMSprop" :
+                    opt_ctg = 1
+                else:
+                    opt_ctg = 2
+                lrv = trial.params['learning_rate']
+                acv = trial.value
+                trial_values.append(dpv)
+                trial_values.append(opt_ctg)
+                trial_values.append(lrv)
+                trial_values.append(acv)
+                trial_values.append(WORKER_ID)
 
-        data_trial = bd.VectorFieldf(trial_values,rate*5)
-        container_out = bd.pSimple()
-        container_out.get().appendData("trial", data_trial, bd.DECAF_NOFLAG, bd.DECAF_PRIVATE, bd.DECAF_SPLIT_DEFAULT, bd.DECAF_MERGE_APPEND_VALUES)
-        decaf.put(container_out,"out")
+            data_trial = bd.VectorFieldf(trial_values,rate*5)
+            container_out = bd.pSimple()
+            container_out.get().appendData("trial", data_trial, bd.DECAF_NOFLAG, bd.DECAF_PRIVATE, bd.DECAF_SPLIT_DEFAULT, bd.DECAF_MERGE_APPEND_VALUES)
+            decaf.put(container_out,"out")
 
     print("worker " + str(WORKER_ID) + " terminating")
     decaf.terminate()
