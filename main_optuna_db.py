@@ -15,6 +15,9 @@ import optuna
 from optuna.distributions import UniformDistribution, CategoricalDistribution,LogUniformDistribution
 optuna.logging.set_verbosity(optuna.logging.ERROR)
 
+import time
+from mpi4py import MPI
+
 ### ------------------------- LOGGER--------------------------------
 logger = logging.getLogger('optuna_db_log')
 logger.setLevel(logging.DEBUG)
@@ -55,13 +58,13 @@ def get_arguments():
     return args
 
 def objective(trial):
-
+    start = time.time()
     model, training_generator, val_generator, test_generator = initialize(ARGS)
 
     optim_name   = trial.suggest_categorical("optimizer", ["Adam", "RMSprop", "SGD"])
     weight_decay = trial.suggest_float("weight_decay", 1e-5, 1e-1, log=True)
     lr           = trial.suggest_float("learning_rate", 1e-7, 1e-5, log=True)
-    trial.set_user_attr("worker_id", WORKER_ID)
+    #trial.set_user_attr("worker_id", WORKER_ID)
     
     optimizer = util.select_optimizer(optim_name, model, lr, weight_decay)
     scheduler = ReduceLROnPlateau(optimizer, factor=0.5, patience=2, min_lr=1e-5, verbose=True)
@@ -74,7 +77,8 @@ def objective(trial):
         train(ARGS, model, training_generator, optimizer, epoch)        
         val_metrics, confusion_matrix = validation(ARGS, model, val_generator, epoch)
         scheduler.step(val_metrics._data.average.loss)
-   
+
+    print(f'Worker {WORKER_ID} finished trial {trial.number} in {time.time() - start} seconds')
     return val_metrics._data.average.recall_mean
 
 
@@ -97,9 +101,11 @@ def create_study(hpo_checkpoint_file, total_trials):
             print("There are {} trial(s) to do out of {}".format(todo_trials, total_trials))
             study.optimize(objective, n_trials=todo_trials, timeout=600, callbacks=[hpo_monitor])
     except:
-        study = optuna.create_study(direction = 'maximize', study_name = MODEL, storage='mysql://decaf_hpo_db_admin:3Iiidd_2s25j3w33jjdd@nerscdb04.nersc.gov/decaf_hpo_db')
-        study.set_user_attr("worker_id", WORKER_ID)
-        study.optimize(objective, n_trials=total_trials, timeout=600, callbacks=[hpo_monitor])
+        #study = optuna.create_study(direction = 'maximize', study_name = MODEL, storage='mysql://decaf_hpo_db_admin:3Iiidd_2s25j3w33jjdd@nerscdb04.nersc.gov/decaf_hpo_db')
+        study = optuna.load_study(study_name = MODEL, storage='mysql://decaf_hpo_db_admin:3Iiidd_2s25j3w33jjdd@nerscdb04.nersc.gov/decaf_hpo_db')
+        #study.set_user_attr("worker_id", WORKER_ID)
+        #study.optimize(objective, n_trials=total_trials, timeout=600, callbacks=[hpo_monitor])
+        study.optimize(objective, n_trials=total_trials)
     return study
 
 
@@ -123,7 +129,7 @@ def main():
         torch.backends.cudnn.benchmark = False   
     
     total_trials  = ARGS.trials
-    WORKER_ID     = ARGS.worker_id
+    WORKER_ID     = MPI.COMM_WORLD.Get_rank()
     MODEL         = ARGS.model
 
     fh = logging.FileHandler(LOG_DIR + 'main_worker_{}.log'.format(WORKER_ID))
@@ -136,6 +142,7 @@ def main():
     except Exception as e:
         logger.info(e)    
     finally:
+        #MPI.COMM_WORLD.Barrier()
         final_hpo_monitor(study)
         print(study.trials_dataframe())
 
@@ -143,4 +150,6 @@ def main():
 
 
 if __name__ == '__main__':
+    start_main = time.time()
     main()
+    print(f'Worker {WORKER_ID} ran in {time.time() - start_main} seconds')
