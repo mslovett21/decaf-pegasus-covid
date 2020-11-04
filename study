@@ -1,0 +1,10 @@
+#!/bin/bash
+operation=$1
+if [[ "$operation" == "create" ]]; then
+    optuna create-study --study-name "COVIDNet_small" --storage "mysql://decaf_hpo_db_admin:3Iiidd_2s25j3w33jjdd@nerscdb04.nersc.gov/decaf_hpo_db" --direction "maximize"
+elif [[ "$operation" == "delete" ]]; then
+    optuna delete-study --study-name "COVIDNet_small" --storage "mysql://decaf_hpo_db_admin:3Iiidd_2s25j3w33jjdd@nerscdb04.nersc.gov/decaf_hpo_db"
+else
+    echo "Error: ./study.sh create/delete"
+    exit 1
+fi
