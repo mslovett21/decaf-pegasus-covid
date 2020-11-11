@@ -33,6 +33,15 @@ conda install mysqlclient pymysql
 
 2.2. In order to run the workflow version using Decaf, it is mandatory to install Decaf. Otherwise, please skip this step
 
+Install mpi4py 
+```
+wget https://bitbucket.org/mpi4py/mpi4py/downloads/mpi4py-3.0.3.tar.gz
+tar zxvf mpi4py-3.0.3.tar.gz
+cd mpi4py-3.0.3
+CC=$(which cc) CXX=$(which CC) FC=$(which ftn) python setup.py build --mpicc=$(which cc)
+CC=$(which cc) CXX=$(which CC) FC=$(which ftn) python setup.py install
+```
+
 Assume that Decaf will be installed to ${DECAF_PREFIX}. Please change ${DECAF_PREFIX} to your desired installation directory
 ```
 git clone https://github.com/tpeterka/decaf.git 
