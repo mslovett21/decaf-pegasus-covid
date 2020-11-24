@@ -106,7 +106,7 @@ def create_study(hpo_checkpoint_file, total_trials):
         study = optuna.load_study(study_name = MODEL, storage='mysql://decaf_hpo_db_admin:3Iiidd_2s25j3w33jjdd@nerscdb04.nersc.gov/decaf_hpo_db', pruner=optuna.pruners.NopPruner())
         #study.set_user_attr("worker_id", WORKER_ID)
         #study.optimize(objective, n_trials=total_trials, timeout=600, callbacks=[hpo_monitor])
-        study.optimize(objective, n_trials=total_trials, timeout=300)
+        study.optimize(objective, n_trials=total_trials)
     return study
 
 
