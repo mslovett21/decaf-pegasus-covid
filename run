@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Parameters
+NWORKERS=$1
+NTRIALS=10
+NTRIALS_PER_WORKER=$(( NTRIALS/NWORKERS ))
+NCORES=64
+TIMES=$2
+
+for (( i=1; i<=$TIMES; i++ ))
+do
+    echo "--- Start trial $i"
+    # Prepare
+    rm hpo_study_checkpoint_* logs/*
+    ./study delete
+    ./study create
+
+    # Execution
+    echo "--- Starting $NWORKERS worker, each worker runs on $NCORES cores and explores $NTRIALS trials"
+    start=$SECONDS
+    srun -n ${NWORKERS} -c ${NCORES} python main_optuna_db.py --trials ${NTRIALS_PER_WORKER} &> log.db.${NWORKERS}_${i}
+    end=$SECONDS
+    echo "Duration: $((end-start)) seconds." >> log.db.${NWORKERS}_${i}
+    echo "--- End trial $i"
+done
