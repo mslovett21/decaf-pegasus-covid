@@ -97,16 +97,14 @@ sh cori.sh 2 32 5
 ├── decaf
 │   ├── run
 │   └── ...
-├── main.sh
-└── submit
+└── main.sh
 ```
 
 
 - How to submit
 
 ```
-./submit ${NWORKERS}
+sbatch main.sh ${NWORKERS}
 ```
 
-- References these scripts 
-  - 
+- References: [run](run), [main.sh](main.sh)
