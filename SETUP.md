@@ -87,18 +87,20 @@ sh cori.sh 2 32 5
 
 ## Submit jobs
 
-- Directory structure
+- Directory structure  
+        
+```bash
+├── datasets
+├── db
+│   ├── run
+│   └── ...
+├── decaf
+│   ├── run
+│   └── ...
+├── main.sh
+└── submit
+```
 
-    .
-    ├── datasets
-    ├── db                   
-    │   ├── run              # Script to run Database version
-    │   └── ...              
-    ├── decaf
-    │   ├── run              # Script to run Decaf version
-    │   └── ...              
-    ├── main.sh              # Main Slurm script, which call run in db and decaf directories
-    └── submit               # Scrip to submit jobs by calling main.sh
 
 - How to submit
 
