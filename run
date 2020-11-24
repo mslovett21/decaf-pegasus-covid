@@ -2,7 +2,7 @@
 
 # Parameters
 NWORKERS=$1
-NTRIALS=10
+NTRIALS=256
 NTRIALS_PER_WORKER=$(( NTRIALS/NWORKERS ))
 NCORES=64
 TIMES=$2
@@ -16,7 +16,7 @@ do
     ./study create
 
     # Execution
-    echo "--- Starting $NWORKERS worker, each worker runs on $NCORES cores and explores $NTRIALS trials"
+    echo "--- Starting $NWORKERS worker, each worker runs on $NCORES cores and explores ${NTRIALS_PER_WORKER} trials"
     start=$SECONDS
     srun -n ${NWORKERS} -c ${NCORES} python main_optuna_db.py --trials ${NTRIALS_PER_WORKER} &> log.db.${NWORKERS}_${i}
     end=$SECONDS
