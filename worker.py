@@ -85,7 +85,7 @@ def hpo_monitor(study):
 def create_study(hpo_checkpoint_file, decaf):
     global STUDY
 
-    STUDY = optuna.create_study(direction = 'maximize', study_name = MODEL)
+    STUDY = optuna.create_study(direction = 'maximize', study_name = MODEL, pruner=optuna.pruners.NopPruner())
     STUDY.set_user_attr("worker_id", WORKER_ID)
 
     container_in = bd.pSimple() #container_in: decaf data container for data exchange between master and workers.
@@ -178,8 +178,8 @@ def main():
     w.makeWflow(w,"optuna.json")
 
     a = MPI._addressof(MPI.COMM_WORLD)
-    r = MPI.COMM_WORLD.Get_rank()
     decaf = d.Decaf(a,w)
+    r = MPI.COMM_WORLD.Get_rank()
 
     try:
         ARGS = get_arguments()

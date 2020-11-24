@@ -32,8 +32,8 @@ def main():
     w.makeWflow(w,"optuna.json")
 
     a = MPI._addressof(MPI.COMM_WORLD)
-    r = MPI.COMM_WORLD.Get_rank()
     decaf = d.Decaf(a,w)
+    r = MPI.COMM_WORLD.Get_rank()
 
 
     args            = parser.parse_args()
@@ -46,7 +46,7 @@ def main():
     print("Exchange rate is {}".format(EXCHANGE_RATE))
 
     #orc@03-09: creating a study object at the master to checkpoint at the master:
-    STUDY = optuna.create_study(direction = 'maximize', study_name = MODEL)
+    STUDY = optuna.create_study(direction = 'maximize', study_name = MODEL, pruner=optuna.pruners.NopPruner())
     STUDY.set_user_attr("worker_id", r)
 
     container = bd.pSimple()
