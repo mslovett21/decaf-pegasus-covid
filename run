@@ -33,7 +33,7 @@ do
     # Execution
     echo "--- Starting $NWORKERS worker, each worker runs on $NCORES cores and explores ${NTRIALS} trials in total"
     start=$SECONDS
-    srun -n ${NTASKS} -c ${NCORES} --multi-prog covid-${NWORKERS}.conf &> log.decaf.${NWORKERS}_${i}
+    srun -N ${NTASKS} -n ${NTASKS} -c ${NCORES} --multi-prog covid-${NWORKERS}.conf &> log.decaf.${NWORKERS}_${i}
     end=$SECONDS
     echo "Duration: $((end-start)) seconds." >> log.decaf.${NWORKERS}_${i}
     echo "--- End trial $i with Decaf"
