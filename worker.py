@@ -22,6 +22,8 @@ import optuna
 from optuna.distributions import UniformDistribution, CategoricalDistribution,LogUniformDistribution
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 
+import time
+
 ### -------------------------VARIABLES--------------------------------
 
 #DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -59,7 +61,7 @@ def get_arguments():
 ### -------------------------HPO--------------------------------
 
 def objective(trial):
-
+    start = time.time()
     model, training_generator, val_generator, test_generator = initialize(ARGS)
 
     optim_name   = trial.suggest_categorical("optimizer", ["Adam", "RMSprop", "SGD"])
@@ -76,6 +78,8 @@ def objective(trial):
         train(ARGS, model, training_generator, optimizer, epoch)
         val_metrics, confusion_matrix = validation(ARGS, model, val_generator, epoch)
         scheduler.step(val_metrics._data.average.loss)
+
+    print(f'Worker {WORKER_ID} finished trial {trial.number} in {time.time() - start} seconds')
 
     return val_metrics._data.average.recall_mean
 
@@ -97,12 +101,16 @@ def create_study(hpo_checkpoint_file, decaf):
             container_in.get().setToken(False)
         else:
             #receive the trial_info from master
+            start_recv = time.time()
             recv = container_in.get().getFieldDataSI("rate")
             rate = recv.getData()
             new_trial = container_in.get().getFieldDataVF("out_trial")
             nt_values = new_trial.getVector()
             print("worker at rank " + str(WORKER_ID) + " received "+ str(rate) + " length of " + str(len(nt_values)))
+            print(f'Worker {WORKER_ID} received trials from master in {time.time() - start_recv} seconds')
+            
             #orc: manipulating the new_trials to remove our trial values
+            start_comp = time.time()
             import numpy as np
             X = np.array(nt_values)
             arr_size = int(len(nt_values)/5)
@@ -124,10 +132,12 @@ def create_study(hpo_checkpoint_file, decaf):
                         value= trial_5D[i][3],)
                     STUDY.add_trial(new_trial)
                     print("New trial was added at worker at rank " + str(WORKER_ID))
+            print(f'Worker {WORKER_ID} extracted new trials in {time.time() - start_comp} seconds')
 
         print("performing more " + str(rate) + " trials...")
         if rate > 0 :
-            STUDY.optimize(objective, n_trials=rate, timeout=600)
+            #STUDY.optimize(objective, n_trials=rate, timeout=600)
+            STUDY.optimize(objective, n_trials=rate)
 
         print("Study statistics: ")
         print("Number of finished trials: ", len(STUDY.trials))
@@ -137,6 +147,7 @@ def create_study(hpo_checkpoint_file, decaf):
         print("  Value: ", trial.value)
 
         if (rate > 0):
+            start_send = time.time()
             #orc: send the trial_info to the master
             completed_trials = STUDY.trials[-rate:]
             trial_values = []
@@ -161,6 +172,7 @@ def create_study(hpo_checkpoint_file, decaf):
             container_out = bd.pSimple()
             container_out.get().appendData("trial", data_trial, bd.DECAF_NOFLAG, bd.DECAF_PRIVATE, bd.DECAF_SPLIT_DEFAULT, bd.DECAF_MERGE_APPEND_VALUES)
             decaf.put(container_out,"out")
+            print(f'Worker {WORKER_ID} sent trials to master in {time.time() - start_send} seconds')
 
     print("worker " + str(WORKER_ID) + " terminating")
     decaf.terminate()
@@ -178,8 +190,8 @@ def main():
     w.makeWflow(w,"optuna.json")
 
     a = MPI._addressof(MPI.COMM_WORLD)
-    decaf = d.Decaf(a,w)
     r = MPI.COMM_WORLD.Get_rank()
+    decaf = d.Decaf(a,w)
 
     try:
         ARGS = get_arguments()
@@ -210,7 +222,9 @@ def main():
 
 
 if __name__ == '__main__':
+    start_main = time.time()
     main()
+    print(f'Worker {WORKER_ID} ran in {time.time() - start_main} seconds')
 
 
 

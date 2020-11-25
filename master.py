@@ -11,6 +11,8 @@ import optuna
 from optuna.distributions import UniformDistribution, CategoricalDistribution,LogUniformDistribution
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 
+import time
+
 import joblib
 ### ------------------------- PARSER --------------------------------
 arch_names = ["basicnet", "densenet121", "vgg16"]
@@ -23,7 +25,6 @@ parser.add_argument('--model', type=str, default='COVIDNet_small',choices=('COVI
 
 ### -------------------------MAIN--------------------------------
 def main():
-
     global TOTAL_TRIALS
     global CHECKPOINT_FREQ
     global MODEL
@@ -32,8 +33,8 @@ def main():
     w.makeWflow(w,"optuna.json")
 
     a = MPI._addressof(MPI.COMM_WORLD)
-    decaf = d.Decaf(a,w)
     r = MPI.COMM_WORLD.Get_rank()
+    decaf = d.Decaf(a,w)
 
 
     args            = parser.parse_args()
@@ -53,12 +54,15 @@ def main():
     iter = 0
     while(TOTAL_TRIALS > 0):
         #orc: fetch the trial_info from workers
+        start_recv = time.time()
         decaf.get(container, "in")
         in_trial = container.get().getFieldDataVF("trial")
         trial_values = in_trial.getVector()
         print("master at rank " + str(r) + " received data of length" + str(len(trial_values)))
+        print(f'Master received trials from workers in {time.time() - start_recv} seconds')
 
         #orc: adding the received trials to the study object:
+        start_comp = time.time()
         import numpy as np
         X = np.array(trial_values)
         arr_size = int(len(trial_values)/5)
@@ -78,6 +82,7 @@ def main():
                 value= trial_5D[i][3],)
             STUDY.add_trial(new_trial)
             #print("New trial was added at MASTER at rank " + str(r))
+        print(f'Master added trials to study in {time.time() - start_comp} seconds')
 
         #orc: printing study stats on master:
         print("Study statistics at MASTER: ")
@@ -97,12 +102,14 @@ def main():
         print("remained this many trials at MASTER : " + str(TOTAL_TRIALS))
         rate = min(TOTAL_TRIALS, EXCHANGE_RATE)
         #orc: send back the trial_info to the workers, together with the communication frequency we want.
+        start_send = time.time()
         out_trial = bd.VectorFieldf(trial_values, 5)
         data = bd.SimpleFieldi(rate)
         container_out = bd.pSimple()
         container_out.get().appendData("out_trial", out_trial, bd.DECAF_NOFLAG, bd.DECAF_PRIVATE, bd.DECAF_SPLIT_KEEP_VALUE, bd.DECAF_MERGE_DEFAULT)
         container_out.get().appendData("rate", data, bd.DECAF_NOFLAG, bd.DECAF_PRIVATE, bd.DECAF_SPLIT_KEEP_VALUE, bd.DECAF_MERGE_DEFAULT)
         decaf.put(container_out,"out")
+        print(f'Master sent trials to workers in {time.time() - start_send} seconds')
 
     print("master at rank " + str(r) + " terminating")
     decaf.terminate()
@@ -111,7 +118,9 @@ def main():
 
 
 if __name__ == '__main__':
+    start_main = time.time()
     main()
+    print(f'Master ran in {time.time() - start_main} seconds')
 
 
 
