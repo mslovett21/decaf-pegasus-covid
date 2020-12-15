@@ -18,6 +18,10 @@ optuna.logging.set_verbosity(optuna.logging.WARN)
 import time
 from mpi4py import MPI
 
+import os
+
+import resource
+
 ### ------------------------- LOGGER--------------------------------
 logger = logging.getLogger('optuna_db_log')
 logger.setLevel(logging.DEBUG)
@@ -50,6 +54,7 @@ def get_arguments():
     parser.add_argument('--save', type=str, default='./saved/COVIDNet' + util.datestr(),help='path to checkpoint save directory ')
     parser.add_argument('--epochs', type=int,default=1, help = "number of training epochs")
     parser.add_argument('--trials', type=int, default=4, help = "number of HPO trials")
+    parser.add_argument('--jobs', type=int, default=1, help = "number of Optuna parallel jobs")
     parser.add_argument('--worker_id', type=int, default=0, help = "worker id")
     parser.add_argument('--ex_rate',type=int,default=2, help = "info exchange rate in HPO")
     
@@ -92,7 +97,7 @@ def final_hpo_monitor(study):
 
 
 
-def create_study(hpo_checkpoint_file, total_trials):
+def create_study(hpo_checkpoint_file, total_trials, num_jobs):
    
     try:
         study = joblib.load("hpo_study_checkpoint_optuna_{}_{}.pkl".format(MODEL, WORKER_ID))
@@ -106,7 +111,8 @@ def create_study(hpo_checkpoint_file, total_trials):
         study = optuna.load_study(study_name = MODEL, storage='mysql://decaf_hpo_db_admin:3Iiidd_2s25j3w33jjdd@nerscdb04.nersc.gov/decaf_hpo_db', pruner=optuna.pruners.NopPruner())
         #study.set_user_attr("worker_id", WORKER_ID)
         #study.optimize(objective, n_trials=total_trials, timeout=600, callbacks=[hpo_monitor])
-        study.optimize(objective, n_trials=total_trials, n_jobs=1)
+        print(f'Worker {WORKER_ID} n_jobs = {num_jobs}')
+        study.optimize(objective, n_trials=total_trials, n_jobs=num_jobs)
     return study
 
 
@@ -131,9 +137,12 @@ def main():
         torch.backends.cudnn.benchmark = False   
     
     total_trials  = ARGS.trials
+    num_jobs = ARGS.jobs
     WORKER_ID = MPI.COMM_WORLD.Get_rank()
     #WORKER_ID = ARGS.worker_id
     MODEL         = ARGS.model
+    
+    print(f"CPUs = {os.sched_getaffinity(0)}")
 
     fh = logging.FileHandler(LOG_DIR + 'main_worker_{}.log'.format(WORKER_ID))
     fh.setFormatter(formatter)
@@ -141,7 +150,7 @@ def main():
 
     try:
         hpo_checkpoint_file = "hpo_study_checkpoint_optuna_{}_{}.pkl".format(MODEL, WORKER_ID)
-        study = create_study(hpo_checkpoint_file, total_trials)   
+        study = create_study(hpo_checkpoint_file, total_trials, num_jobs)   
     except Exception as e:
         logger.info(e)    
     finally:
@@ -153,6 +162,10 @@ def main():
 
 
 if __name__ == '__main__':
+    s_usage = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    print(f'Start usage: {s_usage}')
     start_main = time.time()
     main()
     print(f'Worker {WORKER_ID} ran in {time.time() - start_main} seconds')
+    e_usage = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    print(f'End usage: {e_usage}')
