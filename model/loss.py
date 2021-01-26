@@ -15,7 +15,8 @@ def crossentropy_loss(output, target):
 
 
 def weighted_loss(output,target,w2):
-    
+
+
     loss = F.cross_entropy(output, target,weight=w2)
     y = torch.argmax(F.softmax(output, dim=1),dim = 1)
     unique, counts = np.unique(target.cpu().numpy(), return_counts=True)

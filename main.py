@@ -21,16 +21,23 @@ logger = logging.getLogger('tunning_log')
 logger.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
+
+from pynvml import *
+nvmlInit()
+handle = nvmlDeviceGetHandleByIndex(0)
+
+
+## All of these are overwriten by the ARGS PAR
 ARGS = ""
 MODEL = 'COVIDNet_small'
 STUDY = None
 EPOCHS = 10
-#DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 LOG_DIR = 'logs/'
 WORKER_ID = 0 
 BATCH_SIZE = 12
 TOTAL_TRIALS = 10
-EXCHANGE_RATE = 2
+EXCHANGE_RATE = 100
 OWN_NEW_TRIALS = 0
 
 
@@ -51,15 +58,22 @@ def get_arguments():
     parser.add_argument('--root_path', type=str, default='./data',help='path to dataset ')
     parser.add_argument('--save', type=str, default='./saved/COVIDNet' + util.datestr(),help='path to checkpoint save directory ')
     parser.add_argument('--epochs', type=int,default=1, help = "number of training epochs")
-    parser.add_argument('--trials', type=int, default=2, help = "number of HPO trials")
+    parser.add_argument('--trials', type=int, default=10, help = "number of HPO trials")
     parser.add_argument('--worker_id', type=int, default=0, help = "worker id")
-    parser.add_argument('--ex_rate',type=int,default=2, help = "info exchange rate in HPO")
-    
+    parser.add_argument('--ex_rate',type=int,default=100, help = "info exchange rate in HPO")
     args = parser.parse_args()
     
     return args
 
 def objective(trial):
+
+    info = nvmlDeviceGetMemoryInfo(handle)
+    print("Total memory:", info.total)
+    print("Free memory:", info.free)
+    print("Used memory:", info.used)
+
+
+
 
     model, training_generator, val_generator, test_generator = initialize(ARGS)
 
@@ -119,7 +133,7 @@ def create_study(hpo_checkpoint_file, args):
     except:
         STUDY = optuna.create_study(direction = 'maximize', study_name = MODEL)
         STUDY.set_user_attr("worker_id", WORKER_ID)
-        STUDY.optimize(objective, n_trials=TOTAL_TRIALS, timeout=600, callbacks=[hpo_global_update])
+        STUDY.optimize(objective, n_trials=TOTAL_TRIALS, timeout=600,gc_after_trial =True, callbacks=[hpo_global_update])
 
 
 
@@ -157,6 +171,8 @@ def main():
         hpo_checkpoint_file = "hpo_study_checkpoint_{}_{}.pkl".format(ARGS.model, WORKER_ID)
         create_study(hpo_checkpoint_file, ARGS)   
     except Exception as e:
+        print("Error in study")
+        print(e)
         logger.info(e)    
     finally:
         hpo_monitor(STUDY)

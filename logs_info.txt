@@ -1,0 +1,271 @@
+Total memory: 25443893248
+Free memory: 22582525952
+Used memory: 2861367296
+Epoch: 1	Sample:    1/  600	Loss:1.0750	Accuracy:0.50	PPV:0.17	Sensitivity:0.33
+--- 8.523999452590942 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.0878	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.1032	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0.  0. 24.]
+ [ 0.  0. 24.]
+ [ 0.  0. 24.]]
+Total memory: 25443893248
+Free memory: 16652828672
+Used memory: 8791064576
+Epoch: 1	Sample:    1/  600	Loss:1.1053	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+--- 8.46926236152649 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.0895	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.1022	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0.  0. 24.]
+ [ 0.  0. 24.]
+ [ 0.  0. 24.]]
+Total memory: 25443893248
+Free memory: 16652828672
+Used memory: 8791064576
+Epoch: 1	Sample:    1/  600	Loss:1.0846	Accuracy:0.58	PPV:0.19	Sensitivity:0.33
+--- 8.249690294265747 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.0934	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.0979	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0.  0. 24.]
+ [ 0.  0. 24.]
+ [ 0.  0. 24.]]
+Total memory: 25443893248
+Free memory: 15403319296
+Used memory: 10040573952
+Epoch: 1	Sample:    1/  600	Loss:1.0964	Accuracy:0.25	PPV:0.08	Sensitivity:0.33
+--- 8.040879964828491 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.0918	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.0984	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0.  0. 24.]
+ [ 0.  0. 24.]
+ [ 0.  0. 24.]]
+Total memory: 25443893248
+Free memory: 15392833536
+Used memory: 10051059712
+Epoch: 1	Sample:    1/  600	Loss:1.0912	Accuracy:0.58	PPV:0.19	Sensitivity:0.33
+--- 7.935382604598999 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.0995	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.0988	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[24.  0.  0.]
+ [24.  0.  0.]
+ [24.  0.  0.]]
+Total memory: 25443893248
+Free memory: 15392833536
+Used memory: 10051059712
+Epoch: 1	Sample:    1/  600	Loss:1.1025	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+--- 7.923055410385132 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.1022	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.0996	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0. 24.  0.]
+ [ 0. 24.  0.]
+ [ 0. 24.  0.]]
+Total memory: 25443893248
+Free memory: 15392833536
+Used memory: 10051059712
+Epoch: 1	Sample:    1/  600	Loss:1.1015	Accuracy:0.25	PPV:0.08	Sensitivity:0.33
+--- 8.241219282150269 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.0850	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.1158	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0.  0. 24.]
+ [ 0.  0. 24.]
+ [ 0.  0. 24.]]
+Total memory: 25443893248
+Free memory: 13304070144
+Used memory: 12139823104
+Epoch: 1	Sample:    1/  600	Loss:1.0968	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+--- 8.334384441375732 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.0878	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.1071	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0.  0. 24.]
+ [ 0.  0. 24.]
+ [ 0.  0. 24.]]
+   number     value             datetime_start          datetime_complete  ... params_optimizer  params_weight_decay user_attrs_worker_id     state
+0       0  0.166667 2021-01-25 20:59:44.395044 2021-01-25 20:59:57.182684  ...             Adam             0.032578                    0  COMPLETE
+1       1  0.166667 2021-01-25 20:59:57.184065 2021-01-25 21:00:08.330214  ...              SGD             0.000024                    0  COMPLETE
+2       2  0.166667 2021-01-25 21:00:31.657740 2021-01-25 21:00:44.939263  ...             Adam             0.000048                    0  COMPLETE
+3       3  0.166667 2021-01-25 21:00:44.940965 2021-01-25 21:00:56.118568  ...          RMSprop             0.046995                    0  COMPLETE
+4       4  0.166667 2021-01-25 21:00:56.121949 2021-01-25 21:01:07.026088  ...             Adam             0.000061                    0  COMPLETE
+5       5  0.166667 2021-01-25 21:01:07.029448 2021-01-25 21:01:17.821038  ...          RMSprop             0.000694                    0  COMPLETE
+6       6  0.166667 2021-01-25 21:01:17.825181 2021-01-25 21:01:28.426211  ...              SGD             0.004613                    0  COMPLETE
+7       7  0.166667 2021-01-25 21:01:28.430315 2021-01-25 21:01:39.059782  ...              SGD             0.007269                    0  COMPLETE
+8       8  0.166667 2021-01-25 21:01:39.064409 2021-01-25 21:01:50.039144  ...             Adam             0.000064                    0  COMPLETE
+9       9  0.166667 2021-01-25 21:01:50.043456 2021-01-25 21:02:01.163683  ...             Adam             0.000033                    0  COMPLETE
+
+[10 rows x 10 columns]
+
+
+
+
+
+
+Total memory: 25443893248
+Free memory: 22571843584
+Used memory: 2872049664
+Epoch: 1	Sample:    1/  600	Loss:1.0750	Accuracy:0.50	PPV:0.17	Sensitivity:0.33
+--- 8.250307559967041 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.0931	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.1068	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0.  0. 24.]
+ [ 0.  0. 24.]
+ [ 0.  0. 24.]]
+Total memory: 25443893248
+Free memory: 17476812800
+Used memory: 7967080448
+Epoch: 1	Sample:    1/  600	Loss:1.1053	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+--- 8.440279245376587 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.1009	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.0999	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0. 24.  0.]
+ [ 0. 24.  0.]
+ [ 0. 24.  0.]]
+Total memory: 25443893248
+Free memory: 17474715648
+Used memory: 7969177600
+Epoch: 1	Sample:    1/  600	Loss:1.0846	Accuracy:0.58	PPV:0.19	Sensitivity:0.33
+--- 8.206637382507324 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.0890	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.1054	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0.  0. 24.]
+ [ 0.  0. 24.]
+ [ 0.  0. 24.]]
+Total memory: 25443893248
+Free memory: 17474715648
+Used memory: 7969177600
+Epoch: 1	Sample:    1/  600	Loss:1.0964	Accuracy:0.25	PPV:0.08	Sensitivity:0.33
+--- 8.07668924331665 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.0936	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.0979	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0.  0. 24.]
+ [ 0.  0. 24.]
+ [ 0.  0. 24.]]
+Total memory: 25443893248
+Free memory: 16642015232
+Used memory: 8801878016
+Epoch: 1	Sample:    1/  600	Loss:1.0912	Accuracy:0.58	PPV:0.19	Sensitivity:0.33
+--- 8.144371747970581 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.0865	Accuracy:0.36	PPV:0.12	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.1177	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0.  0. 24.]
+ [ 0.  0. 24.]
+ [ 0.  0. 24.]]
+Total memory: 25443893248
+Free memory: 16642015232
+Used memory: 8801878016
+Epoch: 1	Sample:    1/  600	Loss:1.1025	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+--- 8.027330160140991 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.0918	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.0994	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0.  0. 24.]
+ [ 0.  0. 24.]
+ [ 0.  0. 24.]]
+Total memory: 25443893248
+Free memory: 16642015232
+Used memory: 8801878016
+Epoch: 1	Sample:    1/  600	Loss:1.1015	Accuracy:0.25	PPV:0.08	Sensitivity:0.33
+--- 8.40536379814148 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.0968	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.0987	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0. 24.  0.]
+ [ 0. 24.  0.]
+ [ 0. 24.  0.]]
+Total memory: 25443893248
+Free memory: 16642015232
+Used memory: 8801878016
+Epoch: 1	Sample:    1/  600	Loss:1.0968	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+--- 8.25614070892334 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.0950	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.0981	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0.  0. 24.]
+ [ 0.  0. 24.]
+ [ 0.  0. 24.]]
+Total memory: 25443893248
+Free memory: 16642015232
+Used memory: 8801878016
+Epoch: 1	Sample:    1/  600	Loss:1.1076	Accuracy:0.17	PPV:0.06	Sensitivity:0.33
+--- 8.117765665054321 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.0882	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.1010	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0.  0. 24.]
+ [ 0.  0. 24.]
+ [ 0.  0. 24.]]
+Total memory: 25443893248
+Free memory: 16642015232
+Used memory: 8801878016
+Epoch: 1	Sample:    1/  600	Loss:1.0887	Accuracy:0.42	PPV:0.14	Sensitivity:0.33
+--- 8.246876001358032 seconds ---
+Training
+ SUMMARY EPOCH: 1	Sample:  589/  589	Loss:1.0978	Accuracy:0.33	PPV:0.11	Sensitivity:0.33
+Validation
+ SUMMARY EPOCH: 1	Sample:   61/   61	Loss:1.1056	Accuracy:0.33	PPV:0.11	Sensitivity:0.17
+Confusion Matrix
+ [[ 0.  0. 24.]
+ [ 0.  0. 24.]
+ [ 0.  0. 24.]]
+   number     value             datetime_start          datetime_complete  ... params_optimizer  params_weight_decay user_attrs_worker_id     state
+0       0  0.166667 2021-01-25 21:04:48.321698 2021-01-25 21:05:01.085162  ...          RMSprop             0.001003                    0  COMPLETE
+1       1  0.166667 2021-01-25 21:05:01.086676 2021-01-25 21:05:12.240264  ...              SGD             0.001050                    0  COMPLETE
+2       2  0.166667 2021-01-25 21:05:12.242924 2021-01-25 21:05:23.158105  ...          RMSprop             0.000052                    0  COMPLETE
+3       3  0.166667 2021-01-25 21:05:23.161134 2021-01-25 21:05:34.018974  ...             Adam             0.000049                    0  COMPLETE
+4       4  0.166667 2021-01-25 21:05:34.022357 2021-01-25 21:05:44.891690  ...          RMSprop             0.005323                    0  COMPLETE
+5       5  0.166667 2021-01-25 21:05:44.895435 2021-01-25 21:05:55.656232  ...          RMSprop             0.001165                    0  COMPLETE
+6       6  0.166667 2021-01-25 21:05:55.658171 2021-01-25 21:06:06.794683  ...              SGD             0.000017                    0  COMPLETE
+7       7  0.166667 2021-01-25 21:06:06.798944 2021-01-25 21:06:17.859056  ...              SGD             0.002701                    0  COMPLETE
+8       8  0.166667 2021-01-25 21:06:17.862749 2021-01-25 21:06:28.719884  ...             Adam             0.000054                    0  COMPLETE
+9       9  0.166667 2021-01-25 21:06:28.724083 2021-01-25 21:06:39.725019  ...          RMSprop             0.000046                    0  COMPLETE
+
+[10 rows x 10 columns]
+
+
+
+
+
