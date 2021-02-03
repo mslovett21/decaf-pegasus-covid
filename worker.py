@@ -137,7 +137,7 @@ def create_study(hpo_checkpoint_file, decaf):
         print("performing more " + str(rate) + " trials...")
         if rate > 0 :
             #STUDY.optimize(objective, n_trials=rate, timeout=600)
-            STUDY.optimize(objective, n_trials=rate)
+            STUDY.optimize(objective, n_trials=rate, gc_after_trial =True)
 
         print("Study statistics: ")
         print("Number of finished trials: ", len(STUDY.trials))
