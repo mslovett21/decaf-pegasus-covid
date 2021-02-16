@@ -3,8 +3,10 @@
 # Parameters
 NTRIALS=$1
 NWORKERS=$2
-NCORES=$3
-TIMES=$4
+NTHREADS_PER_WORKER=$3
+NCORES=$(( NTHREADS_PER_WORKER*2 ))
+NJOBS=$4
+TIMES=$5
 
 NTRIALS_PER_WORKER=$(( NTRIALS/NWORKERS ))
 
@@ -17,10 +19,15 @@ do
     ./study create
 
     # Execution
-    echo "--- Starting $NWORKERS worker, each worker runs on $NCORES cores and explores ${NTRIALS_PER_WORKER} trials"
+    #export OMP_NUM_THREADS=1
+    echo "--- Starting $NWORKERS workers exploring $NTRIALS trials in total, each worker runs on ${NTHREADS_PER_WORKER} physical cores"
     start=$SECONDS
-    srun -N 1 -n ${NWORKERS} -c ${NCORES} --cpu-bind=verbose,cores --threads-per-core=1 --hint=nomultithread python main_optuna_db.py --trials ${NTRIALS_PER_WORKER} &> log.db.${NWORKERS}_${NCORES}_${i}
+    cmd="srun -G 16 -n ${NWORKERS} -c ${NTHREADS_PER_WORKER} --gpus-per-task=1 --gpu-bind=map_gpu:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 --hint=nomultithread python main_optuna_db.py --trials ${NTRIALS_PER_WORKER} --jobs ${NJOBS} --cuda 1"
+    #cmd="srun -G 2 -n ${NWORKERS} -c ${NTHREADS_PER_WORKER} --gpus-per-task=1 --gpu-bind=map_gpu:0,1 --hint=nomultithread nvprof --metrics all --normalized-time-unit us --csv --log-file test-%h-%q{SLURM_JOBID}-%q{SLURM_PROCID}.csv python main_optuna_db.py --trials ${NTRIALS_PER_WORKER} --jobs ${NJOBS} --cuda 1"
+    echo ${cmd}
+    ${cmd} &> log.db.${NTRIALS}_${NWORKERS}_${NTHREADS_PER_WORKER}_${NJOBS}.${i}
+    #srun -N 1 -n ${NWORKERS} -c ${NTHREADS_PER_WORKER} -G 1 --hint=nomultithread python test.py &> log.db.${NWORKERS}_${NTHREADS_PER_WORKER}_${i}
     end=$SECONDS
-    echo "Duration: $((end-start)) seconds." >> log.db.${NWORKERS}_${NCORES}_${i}
+    echo "Duration: $((end-start)) seconds." >> log.db.${NTRIALS}_${NWORKERS}_${NTHREADS_PER_WORKER}_${NJOBS}.${i}
     echo "--- End trial $i"
 done
