@@ -1,9 +1,14 @@
 #!/bin/bash
 #SBATCH -A m2187
 #SBATCH -C gpu
-#SBATCH -G 16
-#SBATCH -c 80
-#SBATCH -t 02:00:00
+#SBATCH -G 8
+#SBATCH -n 8
+#SBATCH -c 4
+#SBATCH --ntasks-per-node=8
+#SBATCH --hint=nomultithread
+#SBATCH --gpus-per-task=1
+#SBATCH --gpu-bind=map_gpu:0,1,2,3,4,5,6,7
+#SBATCH -t 04:00:00
 
 if [ "$#" -ne 4 ]; then
     echo "./main.sh NTRIALS NWORKERS NTHREADS_PER_WORKER NJOBS"
@@ -17,7 +22,7 @@ NTHREADS_PER_WORKER=$3
 NJOBS=$4
 
 #Change to desired number of times each version should run
-NTIMES=1
+NTIMES=2
 
 echo "Number of trials: ${NTRIALS}"
 echo "Number of workers: ${NWORKERS}"
